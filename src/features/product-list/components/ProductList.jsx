@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { increment, incrementAsync, selectCount } from "../productSlice";
+import { selectAllProducts, fetchAllProductsAsync } from "../productSlice";
 import {
   Dialog,
   DialogBackdrop,
@@ -22,6 +22,7 @@ import {
   Squares2X2Icon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  StarIcon,
 } from "@heroicons/react/20/solid";
 import { Link } from "react-router-dom";
 
@@ -41,38 +42,82 @@ const subCategories = [
 ];
 const filters = [
   {
-    id: "color",
-    name: "Color",
+    id: "brands",
+    name: "Brands",
     options: [
-      { value: "white", label: "White", checked: false },
-      { value: "beige", label: "Beige", checked: false },
-      { value: "blue", label: "Blue", checked: true },
-      { value: "brown", label: "Brown", checked: false },
-      { value: "green", label: "Green", checked: false },
-      { value: "purple", label: "Purple", checked: false },
+      { value: "Essence", label: "Essence", checked: false },
+      { value: "Glamour Beauty", label: "Glamour Beauty", checked: false },
+      { value: "Velvet Touch", label: "Velvet Touch", checked: false },
+      { value: "Chic Cosmetics", label: "Chic Cosmetics", checked: false },
+      { value: "Nail Couture", label: "Nail Couture", checked: false },
+      { value: "Calvin Klein", label: "Calvin Klein", checked: false },
+      { value: "Chanel", label: "Chanel", checked: false },
+      { value: "Dior", label: "Dior", checked: false },
+      {
+        value: "Dolce & Gabbana",
+        label: "Dolce & Gabbana",
+        checked: false,
+      },
+      { value: "Gucci", label: "Gucci", checked: false },
+      {
+        value: "Annibale Colombo",
+        label: "Annibale Colombo",
+        checked: false,
+      },
+      { value: "Furniture Co.", label: "Furniture Co.", checked: false },
+      { value: "Knoll", label: "Knoll", checked: false },
+      { value: "Bath Trends", label: "Bath Trends", checked: false },
+      { value: undefined, label: undefined, checked: false },
+      { value: "Apple", label: "Apple", checked: false },
+      { value: "Asus", label: "Asus", checked: false },
+      { value: "Huawei", label: "Huawei", checked: false },
+      { value: "Lenovo", label: "Lenovo", checked: false },
+      { value: "Dell", label: "Dell", checked: false },
+      { value: "Fashion Trends", label: "Fashion Trends", checked: false },
+      { value: "Gigabyte", label: "Gigabyte", checked: false },
+      { value: "Classic Wear", label: "Classic Wear", checked: false },
+      { value: "Casual Comfort", label: "Casual Comfort", checked: false },
+      { value: "Urban Chic", label: "Urban Chic", checked: false },
+      { value: "Nike", label: "Nike", checked: false },
+      { value: "Puma", label: "Puma", checked: false },
+      { value: "Off White", label: "Off White", checked: false },
+      {
+        value: "Fashion Timepieces",
+        label: "Fashion Timepieces",
+        checked: false,
+      },
+      { value: "Longines", label: "Longines", checked: false },
+      { value: "Rolex", label: "Rolex", checked: false },
+      { value: "Amazon", label: "Amazon", checked: false },
     ],
   },
   {
     id: "category",
     name: "Category",
     options: [
-      { value: "new-arrivals", label: "New Arrivals", checked: false },
-      { value: "sale", label: "Sale", checked: false },
-      { value: "travel", label: "Travel", checked: true },
-      { value: "organization", label: "Organization", checked: false },
-      { value: "accessories", label: "Accessories", checked: false },
-    ],
-  },
-  {
-    id: "size",
-    name: "Size",
-    options: [
-      { value: "2l", label: "2L", checked: false },
-      { value: "6l", label: "6L", checked: false },
-      { value: "12l", label: "12L", checked: false },
-      { value: "18l", label: "18L", checked: false },
-      { value: "20l", label: "20L", checked: false },
-      { value: "40l", label: "40L", checked: true },
+      { value: "beauty", label: "beauty", checked: false },
+      { value: "fragrances", label: "fragrances", checked: false },
+      { value: "furniture", label: "furniture", checked: false },
+      { value: "groceries", label: "groceries", checked: false },
+      {
+        value: "home-decoration",
+        label: "home decoration",
+        checked: false,
+      },
+      {
+        value: "kitchen-accessories",
+        label: "kitchen accessories",
+        checked: false,
+      },
+      { value: "laptops", label: "laptops", checked: false },
+      { value: "mens-shirts", label: "mens shirts", checked: false },
+      { value: "mens-shoes", label: "mens shoes", checked: false },
+      { value: "mens-watches", label: "mens watches", checked: false },
+      {
+        value: "mobile-accessories",
+        label: "mobile accessories",
+        checked: false,
+      },
     ],
   },
 ];
@@ -81,24 +126,14 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const products = [
-  {
-    id: 1,
-    name: "Basic Tee",
-    href: "#",
-    imageSrc:
-      "https://tailwindui.com/plus/img/ecommerce-images/product-page-01-related-product-01.jpg",
-    imageAlt: "Front of men's Basic Tee in black.",
-    price: "$35",
-    color: "Black",
-  },
-];
-
 export default function ProductList() {
-  const count = useSelector(selectCount);
+  const products = useSelector(selectAllProducts);
   const dispatch = useDispatch();
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
+  useEffect(() => {
+    dispatch(fetchAllProductsAsync());
+  }, [dispatch]);
   return (
     <div className="sm:px-36 sm:py-10 p-0 bg-gray-100">
       <div className="bg-white">
@@ -359,30 +394,42 @@ export default function ProductList() {
                       <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
                         {products.map((product) => (
                           <Link key={product.id} to={"/product-detail"}>
-                            <div className="group relative">
+                            <div className="group relative flex flex-col h-full border-solid border-2 p-2 border-gray-200">
                               <img
-                                alt={product.imageAlt}
-                                src={product.imageSrc}
-                                className="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80"
+                                alt={product.title}
+                                src={product.thumbnail}
+                                className="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-60 min-h-60"
                               />
                               <div className="mt-4 flex justify-between">
                                 <div>
                                   <h3 className="text-sm text-gray-700">
-                                    <a href={product.href}>
+                                    <a href={product.thumbnail}>
                                       <span
                                         aria-hidden="true"
                                         className="absolute inset-0"
                                       />
-                                      {product.name}
+                                      {product.title}
                                     </a>
                                   </h3>
                                   <p className="mt-1 text-sm text-gray-500">
-                                    {product.color}
+                                    <StarIcon className="w-6 h-6 inline" />
+                                    <span className="align-bottom">
+                                      {product.rating}
+                                    </span>
                                   </p>
                                 </div>
-                                <p className="text-sm font-medium text-gray-900">
-                                  {product.price}
-                                </p>
+                                <div>
+                                  <p className="text-sm font-medium text-gray-900">
+                                    $
+                                    {(
+                                      product.price *
+                                      (1 - product.discountPercentage / 100)
+                                    ).toFixed(2)}
+                                  </p>
+                                  <p className="text-sm font-medium text-gray-400 line-through">
+                                    ${product.price}
+                                  </p>
+                                </div>
                               </div>
                             </div>
                           </Link>
