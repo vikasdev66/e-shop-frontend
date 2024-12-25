@@ -37,6 +37,6 @@ export const cartSlice = createSlice({
 
 export const { increment } = cartSlice.actions;
 
-export const selectCount = (state) => state.productList.value;
+export const selectCart = (state) => state.product.value;
 
 export default cartSlice.reducer;

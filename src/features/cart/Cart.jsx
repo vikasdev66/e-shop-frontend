@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { increment, incrementAsync, selectCount } from "./cartSlice";
+import { increment, incrementAsync, selectCart } from "./cartSlice";
 import {
   Dialog,
   DialogBackdrop,
@@ -39,7 +39,7 @@ const products = [
 ];
 
 export default function Cart() {
-  const count = useSelector(selectCount);
+  const count = useSelector(selectCart);
   const dispatch = useDispatch();
   const [open, setOpen] = useState(true);
 
