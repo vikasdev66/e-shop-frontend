@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StarIcon } from "@heroicons/react/20/solid";
 import { Radio, RadioGroup } from "@headlessui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { selectProductById, fetchProductByIdAsync } from "../productSlice";
+import {
+  selectProductById,
+  fetchProductByIdAsync,
+  resetSelectedProduct,
+} from "../productSlice";
 
 const colors = [
   { name: "White", class: "bg-white", selectedClass: "ring-gray-400" },
@@ -40,9 +44,12 @@ export default function ProductDetail() {
   const product = useSelector(selectProductById);
   const params = useParams();
 
-  useState(() => {
-    dispatch(fetchProductByIdAsync(params.id));
-  }, [params.id]);
+  useEffect(() => {
+    dispatch(resetSelectedProduct());
+    if (params.id) {
+      dispatch(fetchProductByIdAsync(params.id));
+    }
+  }, [params.id, dispatch]);
 
   return (
     <div className="bg-white">
