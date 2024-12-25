@@ -56,8 +56,7 @@ export default function ProductList() {
   const products = useSelector(selectAllProducts);
   const brands = useSelector(selectAllProductsBrands);
   const categories = useSelector(selectAllProductsCategories);
-  // const totalItems = useSelector(selectTotalItems);
-  const [totalItems, setTotalItems] = useState(1);
+  const totalItems = useSelector(selectTotalItems);
   const dispatch = useDispatch();
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [filter, setFilter] = useState({});
@@ -112,10 +111,6 @@ export default function ProductList() {
     console.log({ filter, sort, pagination });
     dispatch(fetchProductsByFilterAsync({ filter, sort, pagination }));
   }, [dispatch, filter, sort, page]);
-
-  useEffect(() => {
-    setTotalItems(products.length);
-  }, [products]);
 
   useEffect(() => {
     setPage(1);
@@ -400,7 +395,10 @@ export default function ProductList() {
                     <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6 sm:py-0 lg:max-w-7xl lg:px-8">
                       <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
                         {products.map((product) => (
-                          <Link key={product.id} to={"/product-detail"}>
+                          <Link
+                            key={product.id}
+                            to={`/product-detail/${product.id}`}
+                          >
                             <div className="group relative flex flex-col h-full border-solid border-2 p-2 border-gray-200">
                               <img
                                 alt={product.title}
@@ -485,8 +483,8 @@ export default function ProductList() {
                     className="isolate inline-flex -space-x-px rounded-md shadow-sm"
                   >
                     <div
-                      onClick={() => {
-                        page > 1 && handlePage(page - 1);
+                      onClick={(e) => {
+                        page > 1 && handlePage(e, page - 1);
                       }}
                       className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
                     >
@@ -515,8 +513,8 @@ export default function ProductList() {
                       );
                     })}
                     <div
-                      onClick={() => {
-                        page < totalPages && handlePage(page + 1);
+                      onClick={(e) => {
+                        page < totalPages && handlePage(e, page + 1);
                       }}
                       className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
                     >
