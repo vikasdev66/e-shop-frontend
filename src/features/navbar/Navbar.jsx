@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
@@ -6,6 +6,9 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { selectCart, fetchCartItemsByUserIdAsync } from "../cart/cartSlice";
+import { selectLoggedInUser } from "../auth/authSlice";
 
 const user = {
   name: "Tom Cook",
@@ -24,7 +27,7 @@ const navigation = [
 const userNavigation = [
   { name: "Your Profile", href: "#" },
   { name: "Settings", href: "#" },
-  { name: "Sign out", href: "#" },
+  { name: "Sign out", link: "/login" },
 ];
 
 function classNames(...classes) {
@@ -32,6 +35,16 @@ function classNames(...classes) {
 }
 
 export default function Navbar({ children }) {
+  const cartItems = useSelector(selectCart);
+  const userInfo = useSelector(selectLoggedInUser);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (userInfo?.data?.id) {
+      dispatch(fetchCartItemsByUserIdAsync(userInfo?.data?.id));
+    }
+  }, [userInfo?.data?.id, dispatch]);
+
   return (
     <>
       <div className="min-h-full">
@@ -44,8 +57,8 @@ export default function Navbar({ children }) {
                     <div className="flex-shrink-0">
                       <Link to={"/"}>
                         <img
-                          className="h-8 w-8"
-                          src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500"
+                          className="h-10 w-10"
+                          src={"/eshop.webp"}
                           alt="e-shop"
                         />
                       </Link>
@@ -83,9 +96,16 @@ export default function Navbar({ children }) {
                             aria-hidden="true"
                             className="size-6"
                           />
-                          <span className="inline-flex items-center rounded-md -ml-2 bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
-                            3
-                          </span>
+                          {cartItems &&
+                            cartItems.filter((item) => item !== null).length >
+                              0 && (
+                              <span className="inline-flex items-center rounded-md -ml-2 bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
+                                {
+                                  cartItems.filter((item) => item !== null)
+                                    .length
+                                }
+                              </span>
+                            )}
                         </button>
                       </Link>
                       {/* Profile dropdown */}
@@ -113,7 +133,8 @@ export default function Navbar({ children }) {
                             {userNavigation.map((item) => (
                               <Menu.Item key={item.name}>
                                 {({ active }) => (
-                                  <a
+                                  <Link
+                                    to={item.link}
                                     href={item.href}
                                     className={classNames(
                                       active ? "bg-gray-100" : "",
@@ -121,7 +142,7 @@ export default function Navbar({ children }) {
                                     )}
                                   >
                                     {item.name}
-                                  </a>
+                                  </Link>
                                 )}
                               </Menu.Item>
                             ))}
@@ -222,7 +243,7 @@ export default function Navbar({ children }) {
         <header className="bg-white shadow">
           <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
             <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-              e-shop
+              E-Shop
             </h1>
           </div>
         </header>

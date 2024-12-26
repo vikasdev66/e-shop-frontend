@@ -5,7 +5,6 @@ import { Navigate } from "react-router-dom";
 
 export default function Protected({ children }) {
   const user = useSelector(selectLoggedInUser);
-  console.log("Protected", user);
   if (!user) {
     return <Navigate to={"/login"} replace />;
   }

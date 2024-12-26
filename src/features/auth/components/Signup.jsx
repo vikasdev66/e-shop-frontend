@@ -1,13 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectLoggedInUser, createUserAsync } from "../authSlice";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 export default function Signup() {
   const loggedInUser = useSelector(selectLoggedInUser);
   const dispatch = useDispatch();
-
   const {
     register,
     handleSubmit,
@@ -15,15 +14,16 @@ export default function Signup() {
     formState: { errors },
   } = useForm();
 
-  console.log("loggedInUser", loggedInUser);
-
+  if (loggedInUser) {
+    return <Navigate to={"/"} replace />;
+  }
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <img
           alt="Your Company"
-          src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600"
-          className="mx-auto h-10 w-auto"
+          src={"/eshop.webp"}
+          className="mx-auto h-20 w-auto"
         />
         <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
           Create a New Account
@@ -34,7 +34,6 @@ export default function Signup() {
         <form
           className="space-y-6"
           onSubmit={handleSubmit((data) => {
-            console.log(data);
             dispatch(
               createUserAsync({ email: data.email, password: data.password })
             );
@@ -61,7 +60,9 @@ export default function Signup() {
                 type="email"
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
               />
-              <p className="text-red-500">{errors?.email?.message}</p>
+              {errors?.email && (
+                <p className="text-red-500">{errors?.email?.message}</p>
+              )}
             </div>
           </div>
           {/* password */}
@@ -98,7 +99,9 @@ export default function Signup() {
                 type="password"
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
               />
-              <p className="text-red-500">{errors?.password?.message}</p>
+              {errors?.password && (
+                <p className="text-red-500">{errors?.password?.message}</p>
+              )}
             </div>
           </div>
 
@@ -131,7 +134,11 @@ export default function Signup() {
                 type="password"
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
               />
-              <p className="text-red-500">{errors?.confirmPassword?.message}</p>
+              {errors?.confirmPassword && (
+                <p className="text-red-500">
+                  {errors?.confirmPassword?.message}
+                </p>
+              )}
             </div>
           </div>
 

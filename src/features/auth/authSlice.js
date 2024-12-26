@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { createUser } from "./authAPI";
+import { createUser, checkUser } from "./authAPI";
 
 const initialState = {
   loggedInUser: null,
@@ -11,8 +11,16 @@ export const createUserAsync = createAsyncThunk(
   async (userData) => {
     const response = await createUser(userData);
     // The value we return becomes the `fulfilled` action payload
-    console.log(response.data);
     return response.data;
+  }
+);
+
+export const checkUserAsync = createAsyncThunk(
+  "user/checkUser",
+  async (loginInfo) => {
+    const response = await checkUser(loginInfo);
+    // The value we return becomes the `fulfilled` action payload
+    return response;
   }
 );
 
@@ -32,6 +40,13 @@ export const authSlice = createSlice({
       .addCase(createUserAsync.fulfilled, (state, action) => {
         state.status = "idle";
         state.loggedInUser = action.payload;
+      })
+      .addCase(checkUserAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(checkUserAsync.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.loggedInUser = action.payload;
       });
   },
 });
@@ -40,6 +55,6 @@ export const { increment } = authSlice.actions;
 
 export const selectLoggedInUser = (state) => state.auth.loggedInUser;
 
-export const selectCount = (state) => state.product.value;
+export const selectCount = (state) => state.auth.value;
 
 export default authSlice.reducer;

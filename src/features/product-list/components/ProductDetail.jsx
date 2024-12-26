@@ -8,6 +8,8 @@ import {
   fetchProductByIdAsync,
   resetSelectedProduct,
 } from "../productSlice";
+import { selectLoggedInUser } from "../../auth/authSlice";
+import { addToCartAsync } from "../../cart/cartSlice";
 
 const colors = [
   { name: "White", class: "bg-white", selectedClass: "ring-gray-400" },
@@ -42,8 +44,19 @@ export default function ProductDetail() {
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const [selectedSize, setSelectedSize] = useState(sizes[2]);
   const product = useSelector(selectProductById);
+  const user = useSelector(selectLoggedInUser);
   const params = useParams();
 
+  const handleAddToCart = (e) => {
+    e.preventDefault();
+    dispatch(
+      addToCartAsync({
+        ...product,
+        quantity: 1,
+        userId: user?.data?.id,
+      })
+    );
+  };
   useEffect(() => {
     dispatch(resetSelectedProduct());
     if (params.id) {
@@ -139,7 +152,11 @@ export default function ProductDetail() {
             <div className="mt-4 lg:row-span-3 lg:mt-0">
               <h2 className="sr-only">Product information</h2>
               <p className="text-3xl tracking-tight text-gray-900">
-                {product.price}
+                $
+                {(
+                  product.price *
+                  (1 - product.discountPercentage / 100)
+                ).toFixed(2)}
               </p>
 
               {/* Reviews */}
@@ -262,7 +279,9 @@ export default function ProductDetail() {
                 </div>
 
                 <button
-                  type="submit"
+                  onClick={(e) => {
+                    handleAddToCart(e);
+                  }}
                   className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
                   Add to Cart

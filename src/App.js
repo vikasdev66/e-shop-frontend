@@ -5,10 +5,7 @@ import SignupPage from "./pages/SignupPage";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
 
 // const router = createBrowserRouter([
@@ -73,11 +70,7 @@ const router = createBrowserRouter([
   { path: "login", element: <LoginPage /> },
   {
     path: "signup",
-    element: (
-      <Protected>
-        <SignupPage />{" "}
-      </Protected>
-    ),
+    element: <SignupPage />,
   },
   {
     path: "cart",

@@ -95,7 +95,6 @@ export default function ProductList() {
       newFilter[section.id].splice(index, 1);
     }
     setFilter(newFilter);
-    console.log(newFilter);
   };
 
   const handleSort = (e, option) => {
@@ -108,7 +107,6 @@ export default function ProductList() {
 
   useEffect(() => {
     const pagination = { _page: page, _limit: ITEMS_PER_PAGE };
-    console.log({ filter, sort, pagination });
     dispatch(fetchProductsByFilterAsync({ filter, sort, pagination }));
   }, [dispatch, filter, sort, page]);
 

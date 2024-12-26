@@ -1,19 +1,30 @@
-import React, { useState } from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { increment, incrementAsync, selectCount } from "../authSlice";
-import { Link } from "react-router-dom";
+import { selectLoggedInUser, checkUserAsync } from "../authSlice";
+import { Link, Navigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 export default function Login() {
-  const count = useSelector(selectCount);
+  const loggedInUser = useSelector(selectLoggedInUser);
   const dispatch = useDispatch();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  if (loggedInUser?.data) {
+    return <Navigate to={"/"} replace />;
+  }
 
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <img
           alt="Your Company"
-          src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600"
-          className="mx-auto h-10 w-auto"
+          src={"/eshop.webp"}
+          className="mx-auto h-20 w-auto"
         />
         <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
           Login to your account
@@ -21,7 +32,15 @@ export default function Login() {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form action="#" method="POST" className="space-y-6">
+        <form
+          className="space-y-6"
+          onSubmit={handleSubmit((data) => {
+            dispatch(
+              checkUserAsync({ email: data.email, password: data.password })
+            );
+          })}
+          noValidate
+        >
           <div>
             <label
               htmlFor="email"
@@ -32,12 +51,22 @@ export default function Login() {
             <div className="mt-2">
               <input
                 id="email"
-                name="email"
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "Invalid email address",
+                  },
+                })}
                 type="email"
-                required
-                autoComplete="email"
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
               />
+              {errors?.email && (
+                <p className="text-red-500">{errors?.email?.message}</p>
+              )}
+              {loggedInUser?.error && (
+                <p className="text-red-500">{loggedInUser?.error}</p>
+              )}
             </div>
           </div>
 
@@ -61,12 +90,18 @@ export default function Login() {
             <div className="mt-2">
               <input
                 id="password"
-                name="password"
+                {...register("password", {
+                  required: "Password is required",
+                })}
                 type="password"
-                required
-                autoComplete="current-password"
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
               />
+              {errors?.password && (
+                <p className="text-red-500">{errors?.password?.message}</p>
+              )}
+              {loggedInUser?.error && (
+                <p className="text-red-500">{loggedInUser?.error}</p>
+              )}
             </div>
           </div>
 
