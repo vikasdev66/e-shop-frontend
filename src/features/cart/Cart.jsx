@@ -1,43 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { selectCart, fetchCartItemsByUserIdAsync } from "./cartSlice";
 import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  DialogTitle,
-} from "@headlessui/react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+  selectCart,
+  fetchCartItemsByUserIdAsync,
+  updateCartAsync,
+  deleteItemFromCartAsync,
+} from "./cartSlice";
 import { Link } from "react-router-dom";
-import { useParams } from "react-router-dom";
 import { selectLoggedInUser } from "../auth/authSlice";
-const products = [
-  {
-    id: 1,
-    name: "Throwback Hip Bag",
-    href: "#",
-    color: "Salmon",
-    price: "$90.00",
-    quantity: 1,
-    imageSrc:
-      "https://tailwindui.com/plus/img/ecommerce-images/shopping-cart-page-04-product-01.jpg",
-    imageAlt:
-      "Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.",
-  },
-  {
-    id: 2,
-    name: "Medium Stuff Satchel",
-    href: "#",
-    color: "Blue",
-    price: "$32.00",
-    quantity: 1,
-    imageSrc:
-      "https://tailwindui.com/plus/img/ecommerce-images/shopping-cart-page-04-product-02.jpg",
-    imageAlt:
-      "Front of satchel with blue canvas body, black straps and handle, drawstring top, and front zipper pouch.",
-  },
-  // More products...
-];
 
 export default function Cart() {
   const cartItems = useSelector(selectCart);
@@ -45,6 +15,13 @@ export default function Cart() {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(true);
 
+  const handleQuantity = (e, item) => {
+    dispatch(updateCartAsync({ ...item, quantity: Number(e.target.value) }));
+  };
+
+  const handleRemove = (item) => {
+    dispatch(deleteItemFromCartAsync(item.id));
+  };
 
   useEffect(() => {
     if (user?.data?.id) {
@@ -102,14 +79,29 @@ export default function Cart() {
                             Qty
                           </label>
 
-                          <select>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
+                          <select
+                            value={item.quantity}
+                            onChange={(e) => {
+                              handleQuantity(e, item);
+                            }}
+                          >
+                            {[...Array(item.minimumOrderQuantity).keys()].map(
+                              (que, index) => (
+                                <option key={index} value={que + 1}>
+                                  {que + 1}
+                                </option>
+                              )
+                            )}
+
+                            {/* <option value="2">2</option> */}
                           </select>
                         </div>
 
                         <div className="flex">
                           <button
+                            onClick={() => {
+                              handleRemove(item);
+                            }}
                             type="button"
                             className="font-medium text-indigo-600 hover:text-indigo-500"
                           >
@@ -131,17 +123,19 @@ export default function Cart() {
           <p>
             $
             {cartItems &&
-              cartItems.reduce(
-                (amount, item) =>
-                  item
-                    ? amount +
-                      ((
-                        item.price *
-                        (1 - item.discountPercentage / 100)
-                      ).toFixed(2) * item.quantity || 0)
-                    : amount,
-                0
-              ).toFixed(2)}
+              cartItems
+                .reduce(
+                  (amount, item) =>
+                    item
+                      ? amount +
+                        ((
+                          item.price *
+                          (1 - item.discountPercentage / 100)
+                        ).toFixed(2) * item.quantity || 0)
+                      : amount,
+                  0
+                )
+                .toFixed(2)}
           </p>
         </div>
         <p className="mt-0.5 text-sm text-gray-500">

@@ -8,6 +8,7 @@ import {
   fetchProductByIdAsync,
   resetSelectedProduct,
 } from "../productSlice";
+import { selectCart, updateCartAsync } from "../../cart/cartSlice";
 import { selectLoggedInUser } from "../../auth/authSlice";
 import { addToCartAsync } from "../../cart/cartSlice";
 
@@ -41,6 +42,7 @@ function classNames(...classes) {
 
 export default function ProductDetail() {
   const dispatch = useDispatch();
+  const cartItems = useSelector(selectCart);
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const [selectedSize, setSelectedSize] = useState(sizes[2]);
   const product = useSelector(selectProductById);
@@ -49,13 +51,24 @@ export default function ProductDetail() {
 
   const handleAddToCart = (e) => {
     e.preventDefault();
-    dispatch(
-      addToCartAsync({
-        ...product,
-        quantity: 1,
-        userId: user?.data?.id,
-      })
-    );
+    const cartItem = cartItems.filter((item) => item.id === product.id)
+    if (cartItem.length) {
+      if (cartItem[0].minimumOrderQuantity > cartItem[0].quantity)
+        dispatch(
+          updateCartAsync({
+            ...cartItem[0],
+            quantity: Number(cartItem[0].quantity + 1),
+          })
+        );
+    } else {
+      dispatch(
+        addToCartAsync({
+          ...product,
+          quantity: 1,
+          userId: user?.data?.id,
+        })
+      );
+    }
   };
   useEffect(() => {
     dispatch(resetSelectedProduct());

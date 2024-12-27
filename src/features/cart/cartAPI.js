@@ -37,3 +37,46 @@ export async function fetchCartItemsByUserId(userId) {
     return { data: null, error: error.message };
   }
 }
+
+export async function updateCart(update) {
+  try {
+    const response = await fetch(`${BASE_URL}/cart/${update.id}`, {
+      method: "PATCH",
+      body: JSON.stringify(update),
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      throw new Error(
+        `Failed to update cart: ${response.status} ${response.statusText}`
+      );
+    }
+    const data = await response.json();
+    return { data };
+  } catch (error) {
+    console.error("Error to update cart:", error.message);
+    return { data: null, error: error.message };
+  }
+}
+
+export async function deleteItemFromCart(itemId) {
+  try {
+    const response = await fetch(`${BASE_URL}/cart/${itemId}`, {
+      method: "DELETE",
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      throw new Error(
+        `Failed to delete item from cart: ${response.status} ${response.statusText}`
+      );
+    }
+    // const data = await response.json();
+    return { data: { id: itemId } };
+  } catch (error) {
+    console.error("Error to delete item from cart:", error.message);
+    return { data: null, error: error.message };
+  }
+}
