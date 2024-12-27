@@ -6353,7 +6353,7 @@
         "https://cdn.dummyjson.com/products/images/beauty/Eyeshadow%20Palette%20with%20Mirror/1.png"
       ],
       "thumbnail": "https://cdn.dummyjson.com/products/images/beauty/Eyeshadow%20Palette%20with%20Mirror/thumbnail.png",
-      "quantity": 1,
+      "quantity": 2,
       "userId": 1
     },
     {
@@ -6484,5 +6484,33 @@
       "quantity": 6,
       "userId": 1
     }
+  ],
+  "addresses": [
+    {
+      "name": "Vikas Mishra",
+      "email": "vikasmishra@gmail.com",
+      "phoneNumber": "7355633870",
+      "country": "india",
+      "street": "20000",
+      "city": "Lucknow",
+      "state": "uttar pradesh",
+      "pinCode": "111111",
+      "userId": 1,
+      "id": 1
+    },
+    {
+      "name": "Raj Mishra",
+      "email": "vikasmishra@gmail.com",
+      "phoneNumber": "7355633870",
+      "country": "india",
+      "street": "20000",
+      "city": "Lucknow",
+      "state": "uttar pradesh",
+      "pinCode": "111111",
+      "userId": 1,
+      "id": 2
+    }
+  ],
+  "orders": [
   ]
 }

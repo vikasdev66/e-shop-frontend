@@ -45,11 +45,13 @@ export default function Cart() {
                 return (
                   <li key={item.id} className="flex py-6">
                     <div className="size-24 shrink-0 overflow-hidden rounded-md border border-gray-200">
-                      <img
-                        alt={item.title}
-                        src={item.thumbnail}
-                        className="size-full object-cover"
-                      />
+                      <Link to={`/product-detail/${item.id}`}>
+                        <img
+                          alt={item.title}
+                          src={item.thumbnail}
+                          className="size-full object-cover"
+                        />
+                      </Link>
                     </div>
 
                     <div className="ml-4 flex flex-1 flex-col">
