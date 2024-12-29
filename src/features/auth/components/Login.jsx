@@ -1,20 +1,20 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { selectLoggedInUser, checkUserAsync } from "../authSlice";
+import { selectLoggedInUser, selectError, checkUserAsync } from "../authSlice";
 import { Link, Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 export default function Login() {
   const loggedInUser = useSelector(selectLoggedInUser);
+  const error = useSelector(selectError);
   const dispatch = useDispatch();
-
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  if (loggedInUser?.data) {
+  if (loggedInUser) {
     return <Navigate to={"/"} replace />;
   }
 
@@ -64,9 +64,6 @@ export default function Login() {
               {errors?.email && (
                 <p className="text-red-500">{errors?.email?.message}</p>
               )}
-              {loggedInUser?.error && (
-                <p className="text-red-500">{loggedInUser?.error}</p>
-              )}
             </div>
           </div>
 
@@ -99,9 +96,7 @@ export default function Login() {
               {errors?.password && (
                 <p className="text-red-500">{errors?.password?.message}</p>
               )}
-              {loggedInUser?.error && (
-                <p className="text-red-500">{loggedInUser?.error}</p>
-              )}
+              {error && <p className="text-red-500">{error}</p>}
             </div>
           </div>
 

@@ -1,20 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { message, Space } from "antd";
 import {
   selectCart,
-  fetchCartItemsByUserIdAsync,
   updateCartAsync,
   deleteItemFromCartAsync,
 } from "../cart/cartSlice";
 import {
-  selectAddresses,
-  createAddressAsync,
-  fetchAddressByUserIdAsync,
   deleteAddressAsync,
-} from "./checkoutSlice";
-import { createOrderAsync } from "../order/orderSlice";
-import { selectLoggedInUser } from "../auth/authSlice";
+  createAddressAsync,
+  selectUserInfo,
+} from "../user/userSlice";
+import { createOrderAsync, selectOrders } from "../order/orderSlice";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import { Link, Navigate } from "react-router-dom";
 import { MenuItem } from "@headlessui/react";
@@ -22,8 +19,8 @@ import { useForm } from "react-hook-form";
 
 export default function Checkout() {
   const cartItems = useSelector(selectCart);
-  const user = useSelector(selectLoggedInUser);
-  const addresses = useSelector(selectAddresses);
+  const user = useSelector(selectUserInfo);
+  const order = useSelector(selectOrders);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("cash");
   const [messageApi, contextHolder] = message.useMessage();
@@ -64,6 +61,8 @@ export default function Checkout() {
       const address = Object.fromEntries(
         Object.entries(selectedAddress).filter(([key]) => key !== "id")
       );
+      const date = new Date();
+      const currentDate = date.toLocaleDateString(); //  "mm/dd/yyyy"
       const order = {
         products: cartItems.map((item) => {
           return {
@@ -71,16 +70,33 @@ export default function Checkout() {
             title: item.title,
             description: item.description,
             category: item.category,
-            price: 54545,
+            price: (item.price * (1 - item.discountPercentage / 100)).toFixed(
+              2
+            ),
             warrantyInformation: item.warrantyInformation,
             thumbnail: item.thumbnail,
             brand: item.brand,
+            quantity: item.quantity,
           };
         }),
         ...address,
         addressId: selectedAddress?.id,
-        userId: user?.data?.id,
+        userId: user.userInfo.id,
         paymentMethod: paymentMethod,
+        status: "pending",
+        datePlaced: currentDate,
+        subTotal: cartItems
+          .reduce(
+            (amount, item) =>
+              item
+                ? amount +
+                  ((item.price * (1 - item.discountPercentage / 100)).toFixed(
+                    2
+                  ) * item.quantity || 0)
+                : amount,
+            0
+          )
+          .toFixed(2),
       };
       dispatch(createOrderAsync(order));
     } else {
@@ -91,15 +107,12 @@ export default function Checkout() {
     }
   };
 
-  useEffect(() => {
-    if (user?.data?.id) {
-      dispatch(fetchCartItemsByUserIdAsync(user?.data?.id));
-      dispatch(fetchAddressByUserIdAsync(user?.data?.id));
-    }
-  }, [user.data.id, dispatch]);
-
   if (!cartItems.length) {
     return <Navigate to={"/"} replace />;
+  }
+
+  if (order.isRedirect) {
+    return <Navigate to={`/order-placed/${order.currentOrder.id}`} replace />;
   }
   return (
     <>
@@ -111,7 +124,7 @@ export default function Checkout() {
               className="p-5 bg-white mt-12"
               onSubmit={handleSubmit((data) => {
                 dispatch(
-                  createAddressAsync({ ...data, userId: user?.data?.id })
+                  createAddressAsync({ ...data, userId: user.userInfo.id })
                 );
                 reset();
               })}
@@ -187,7 +200,7 @@ export default function Checkout() {
 
                     <div className="sm:col-span-3">
                       <label
-                        htmlFor="country"
+                        htmlFor="phoneNumber"
                         className="block text-sm/6 font-medium text-gray-900"
                       >
                         Phone Number
@@ -378,8 +391,8 @@ export default function Checkout() {
                   </p>
                   {/* Address list */}
                   <ul role="list" className="">
-                    {addresses.length &&
-                      addresses.map((address) => (
+                    {user.addresses.length &&
+                      user.addresses.map((address) => (
                         <li
                           key={address.id}
                           className="flex justify-between gap-x-6 py-5 px-5 border-solid border-2 border-gray-200"
@@ -406,9 +419,8 @@ export default function Checkout() {
                           </div>
                           <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
                             <p className="text-sm/6 text-gray-900">
-                              {address.houseNumber}, {address.street},{" "}
-                              {address.city}, {address.state}, {address.country}
-                              , {address.pinCode}
+                              {address.street}, {address.city}, {address.state},{" "}
+                              {address.country}, {address.pinCode}
                             </p>
                             <div className="flex">
                               <button

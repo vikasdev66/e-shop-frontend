@@ -1,9 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { createOrder } from "./orderAPI";
+import { createOrder, fetchOrders } from "./orderAPI";
 
 const initialState = {
   orders: [],
   status: "idle",
+  currentOrder: null,
+  isRedirect: false,
 };
 
 export const createOrderAsync = createAsyncThunk(
@@ -15,12 +17,21 @@ export const createOrderAsync = createAsyncThunk(
   }
 );
 
+export const fetchOrdersAsync = createAsyncThunk(
+  "order/fetchOrders",
+  async (userId) => {
+    const response = await fetchOrders(userId);
+    // The value we return becomes the `fulfilled` action payload
+    return response.data;
+  }
+);
+
 export const orderSlice = createSlice({
   name: "order",
   initialState,
   reducers: {
-    increment: (state) => {
-      state.value += 1;
+    resetOrderIsRedirect: (state) => {
+      state.isRedirect = false;
     },
   },
   extraReducers: (builder) => {
@@ -30,13 +41,21 @@ export const orderSlice = createSlice({
       })
       .addCase(createOrderAsync.fulfilled, (state, action) => {
         state.status = "idle";
-        state.orders.push(action.payload);
+        state.currentOrder = action.payload;
+        state.isRedirect = true;
+      })
+      .addCase(fetchOrdersAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchOrdersAsync.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.orders = action.payload;
       });
   },
 });
 
-export const { increment } = orderSlice.actions;
+export const { resetOrderIsRedirect } = orderSlice.actions;
 
-export const selectOrders = (state) => state.order.orders;
+export const selectOrders = (state) => state.order;
 
 export default orderSlice.reducer;

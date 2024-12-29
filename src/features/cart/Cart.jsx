@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   selectCart,
-  fetchCartItemsByUserIdAsync,
   updateCartAsync,
   deleteItemFromCartAsync,
 } from "./cartSlice";
@@ -22,12 +21,6 @@ export default function Cart() {
   const handleRemove = (item) => {
     dispatch(deleteItemFromCartAsync(item.id));
   };
-
-  useEffect(() => {
-    if (user?.data?.id) {
-      dispatch(fetchCartItemsByUserIdAsync(user?.data?.id));
-    }
-  }, [user.data.id, dispatch]);
   return (
     <div className="mx-auto max-w-7xl px-4 mt-12 sm:px-6 lg:px-8 bg-white">
       {/*  <div className="sm:px-20 sm:py-10 p-0 bg-#f2f4f5"> */}

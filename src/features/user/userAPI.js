@@ -1,5 +1,43 @@
 const BASE_URL = "http://localhost:8080";
 
+export async function fetchLoggedInUser(userId) {
+  try {
+    const response = await fetch(`${BASE_URL}/users/${userId}`);
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch user details: ${response.status} ${response.statusText}`
+      );
+    }
+    const data = await response.json();
+    return { data };
+  } catch (error) {
+    console.error("Error to fetch user details:", error.message);
+    return { data: null, error: error.message };
+  }
+}
+
+export async function updateUser(update) {
+  try {
+    const response = await fetch(`${BASE_URL}/users/${update.id}`, {
+      method: "PATCH",
+      body: JSON.stringify(update),
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      throw new Error(
+        `Failed to update user: ${response.status} ${response.statusText}`
+      );
+    }
+    const data = await response.json();
+    return { data };
+  } catch (error) {
+    console.error("Error to update user:", error.message);
+    return { data: null, error: error.message };
+  }
+}
+
 export async function createAddress(address) {
   try {
     const response = await fetch(`${BASE_URL}/addresses`, {

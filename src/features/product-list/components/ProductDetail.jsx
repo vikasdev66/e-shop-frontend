@@ -65,7 +65,7 @@ export default function ProductDetail() {
         addToCartAsync({
           ...product,
           quantity: 1,
-          userId: user?.data?.id,
+          userId: user.id,
         })
       );
     }

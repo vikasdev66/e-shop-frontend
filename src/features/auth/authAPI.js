@@ -35,12 +35,12 @@ export async function checkUser(loginInfo) {
     const data = await response.json();
     if (data.length) {
       if (data[0].password === password) {
-        return { data: data[0], message: "Login successful" };
+        return { data: data[0] };
       } else {
-        return { data: null, error: "Wrong credentials" };
+        return { error: "wrong credentials" };
       }
     }
-    return { data: null, error: "Wrong credentials" };
+    return { error: "wrong credentials" };
   } catch (error) {
     console.error("Error verifying user:", error.message);
     return { data: null, error: error.message };

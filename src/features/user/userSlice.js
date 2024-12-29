@@ -1,18 +1,39 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
+  fetchLoggedInUser,
+  updateUser,
   createAddress,
   fetchAddressByUserId,
   updateAddress,
   deleteAddress,
-} from "./checkoutAPI";
+} from "./userAPI";
 
 const initialState = {
+  userInfo: null,
   addresses: [],
   status: "idle",
 };
 
+export const fetchLoggedInUserAsync = createAsyncThunk(
+  "user/createUser",
+  async (userId) => {
+    const response = await fetchLoggedInUser(userId);
+    // The value we return becomes the `fulfilled` action payload
+    return response.data;
+  }
+);
+
+export const updateUserAsync = createAsyncThunk(
+  "user/updateUser",
+  async (update) => {
+    const response = await updateUser(update);
+    // The value we return becomes the `fulfilled` action payload
+    return response.data;
+  }
+);
+
 export const createAddressAsync = createAsyncThunk(
-  "cart/createAddress",
+  "user/createAddress",
   async (item) => {
     const response = await createAddress(item);
     // The value we return becomes the `fulfilled` action payload
@@ -21,7 +42,7 @@ export const createAddressAsync = createAsyncThunk(
 );
 
 export const fetchAddressByUserIdAsync = createAsyncThunk(
-  "cart/fetchAddressByUserId",
+  "user/fetchAddressByUserId",
   async (userId) => {
     const response = await fetchAddressByUserId(userId);
     // The value we return becomes the `fulfilled` action payload
@@ -30,7 +51,7 @@ export const fetchAddressByUserIdAsync = createAsyncThunk(
 );
 
 export const updateAddressAsync = createAsyncThunk(
-  "cart/updateAddress",
+  "user/updateAddress",
   async (update) => {
     const response = await updateAddress(update);
     // The value we return becomes the `fulfilled` action payload
@@ -39,7 +60,7 @@ export const updateAddressAsync = createAsyncThunk(
 );
 
 export const deleteAddressAsync = createAsyncThunk(
-  "cart/deleteItemFromCart",
+  "user/deleteItemFromCart",
   async (addressId) => {
     const response = await deleteAddress(addressId);
     // The value we return becomes the `fulfilled` action payload
@@ -47,8 +68,8 @@ export const deleteAddressAsync = createAsyncThunk(
   }
 );
 
-export const addressSlice = createSlice({
-  name: "address",
+export const userSlice = createSlice({
+  name: "user",
   initialState,
   reducers: {
     increment: (state) => {
@@ -57,6 +78,20 @@ export const addressSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(fetchLoggedInUserAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchLoggedInUserAsync.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.userInfo = action.payload;
+      })
+      .addCase(updateUserAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(updateUserAsync.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.userInfo = action.payload;
+      })
       .addCase(createAddressAsync.pending, (state) => {
         state.status = "loading";
       })
@@ -86,16 +121,18 @@ export const addressSlice = createSlice({
       })
       .addCase(deleteAddressAsync.fulfilled, (state, action) => {
         state.status = "idle";
-        const index = state.addresses.findIndex(
-          (address) => address.id === action.payload.id
-        );
-        state.addresses.splice(index, 1);
+        if (action.payload) {
+          const index = state.addresses.findIndex(
+            (address) => address.id === action.payload.id
+          );
+          state.addresses.splice(index, 1);
+        }
       });
   },
 });
 
-export const { increment } = addressSlice.actions;
+export const { increment } = userSlice.actions;
 
-export const selectAddresses = (state) => state.address.addresses;
+export const selectUserInfo = (state) => state.user;
 
-export default addressSlice.reducer;
+export default userSlice.reducer;

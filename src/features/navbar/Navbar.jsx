@@ -25,8 +25,8 @@ const navigation = [
 ];
 
 const userNavigation = [
-  { name: "Your Profile", href: "#" },
-  { name: "Settings", href: "#" },
+  { name: "Profile", link: "/user-profile" },
+  { name: "Orders", link: "/orders" },
   { name: "Sign out", link: "/login" },
 ];
 
@@ -135,7 +135,7 @@ export default function Navbar({ children }) {
                                 {({ active }) => (
                                   <Link
                                     to={item.link}
-                                    href={item.href}
+                                    // href={item.link}
                                     className={classNames(
                                       active ? "bg-gray-100" : "",
                                       "block px-4 py-2 text-sm text-gray-700"
