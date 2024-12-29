@@ -17,6 +17,7 @@ import {
   fetchLoggedInUserAsync,
   fetchAddressByUserIdAsync,
 } from "./features/user/userSlice";
+import { setLoading } from "./features/loading/loadingSlice";
 import { fetchCartItemsByUserIdAsync } from "./features/cart/cartSlice";
 import "./App.css";
 
@@ -97,11 +98,13 @@ function App() {
   const user = useSelector(selectLoggedInUser);
 
   useEffect(() => {
+    dispatch(setLoading(true));
     if (user) {
       dispatch(fetchLoggedInUserAsync(user.id));
       dispatch(fetchCartItemsByUserIdAsync(user.id));
       dispatch(fetchAddressByUserIdAsync(user.id));
     }
+    dispatch(setLoading(false));
   }, [user?.id]);
   return (
     <div className="App">

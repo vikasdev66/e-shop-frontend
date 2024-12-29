@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { selectCart, fetchCartItemsByUserIdAsync } from "../cart/cartSlice";
 import { selectLoggedInUser } from "../auth/authSlice";
+import { Loading } from "../loading/Loading";
 
 const user = {
   name: "Tom Cook",
@@ -248,9 +249,11 @@ export default function Navbar({ children }) {
           </div>
         </header>
         <main>
-          <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-            {children}
-          </div>
+          <Loading>
+            <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+              {children}
+            </div>
+          </Loading>
         </main>
       </div>
     </>
