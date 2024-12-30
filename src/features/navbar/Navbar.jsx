@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from "react";
+import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
@@ -6,9 +6,8 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { selectCart, fetchCartItemsByUserIdAsync } from "../cart/cartSlice";
-import { selectLoggedInUser, signOutAsync } from "../auth/authSlice";
+import { useSelector } from "react-redux";
+import { selectCart } from "../cart/cartSlice";
 import { Loading } from "../loading/Loading";
 
 const user = {

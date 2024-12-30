@@ -20,6 +20,7 @@ import {
 import { setLoading } from "./features/loading/loadingSlice";
 import { fetchCartItemsByUserIdAsync } from "./features/cart/cartSlice";
 import SignOut from "./features/signOut/SignOut";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import "./App.css";
 
 const router = createBrowserRouter([
@@ -91,6 +92,10 @@ const router = createBrowserRouter([
         <SignOut />
       </Protected>
     ),
+  },
+  {
+    path: "forgot-password",
+    element: <ForgotPasswordPage />,
   },
   {
     path: "*",
