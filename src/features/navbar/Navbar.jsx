@@ -8,7 +8,7 @@ import {
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { selectCart, fetchCartItemsByUserIdAsync } from "../cart/cartSlice";
-import { selectLoggedInUser } from "../auth/authSlice";
+import { selectLoggedInUser, signOutAsync } from "../auth/authSlice";
 import { Loading } from "../loading/Loading";
 
 const user = {
@@ -28,7 +28,7 @@ const navigation = [
 const userNavigation = [
   { name: "Profile", link: "/user-profile" },
   { name: "Orders", link: "/orders" },
-  { name: "Sign out", link: "/login" },
+  { name: "Sign out", link: "/signOut" },
 ];
 
 function classNames(...classes) {
@@ -37,14 +37,6 @@ function classNames(...classes) {
 
 export default function Navbar({ children }) {
   const cartItems = useSelector(selectCart);
-  const userInfo = useSelector(selectLoggedInUser);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (userInfo?.data?.id) {
-      dispatch(fetchCartItemsByUserIdAsync(userInfo?.data?.id));
-    }
-  }, [userInfo?.data?.id, dispatch]);
 
   return (
     <>

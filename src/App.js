@@ -19,6 +19,7 @@ import {
 } from "./features/user/userSlice";
 import { setLoading } from "./features/loading/loadingSlice";
 import { fetchCartItemsByUserIdAsync } from "./features/cart/cartSlice";
+import SignOut from "./features/signOut/SignOut";
 import "./App.css";
 
 const router = createBrowserRouter([
@@ -80,6 +81,14 @@ const router = createBrowserRouter([
     element: (
       <Protected>
         <UserProfilePage />
+      </Protected>
+    ),
+  },
+  {
+    path: "signOut",
+    element: (
+      <Protected>
+        <SignOut />
       </Protected>
     ),
   },

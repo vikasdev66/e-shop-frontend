@@ -46,3 +46,12 @@ export async function checkUser(loginInfo) {
     return { data: null, error: error.message };
   }
 }
+
+export async function signOut(userId) {
+  try {
+    return { data: "success" };
+  } catch (error) {
+    console.error("Error verifying user:", error.message);
+    return { data: null, error: error.message };
+  }
+}
