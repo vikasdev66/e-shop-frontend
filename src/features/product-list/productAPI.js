@@ -1,8 +1,6 @@
-const BASE_URL = "http://localhost:8080";
-
 export async function fetchAllProducts() {
   try {
-    const response = await fetch(`${BASE_URL}/products`);
+    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/products`);
     if (!response.ok) throw new Error("Failed to fetch products");
     const data = await response.json();
     return { data };
@@ -14,7 +12,9 @@ export async function fetchAllProducts() {
 
 export async function fetchProductById(id) {
   try {
-    const response = await fetch(`${BASE_URL}/products/${id}`);
+    const response = await fetch(
+      `${process.env.REACT_APP_BASE_URL}/products/${id}`
+    );
     if (!response.ok) throw new Error("Failed to fetch product by ID");
     const data = await response.json();
     return { data };
@@ -26,7 +26,7 @@ export async function fetchProductById(id) {
 
 export async function fetchAllProductsBrands() {
   try {
-    const response = await fetch(`${BASE_URL}/brands`);
+    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/brands`);
     if (!response.ok) throw new Error("Failed to fetch brands");
     const data = await response.json();
     return { data };
@@ -38,7 +38,9 @@ export async function fetchAllProductsBrands() {
 
 export async function fetchAllProductsCategories() {
   try {
-    const response = await fetch(`${BASE_URL}/categories`);
+    const response = await fetch(
+      `${process.env.REACT_APP_BASE_URL}/categories`
+    );
     if (!response.ok) throw new Error("Failed to fetch categories");
     const data = await response.json();
     return { data };
@@ -71,7 +73,9 @@ export async function fetchProductsByFilters(filter, sort, pagination) {
   }
 
   try {
-    const response = await fetch(`${BASE_URL}/products?${queryString}`);
+    const response = await fetch(
+      `${process.env.REACT_APP_BASE_URL}/products?${queryString}`
+    );
     if (!response.ok) throw new Error("Failed to fetch products with filters");
     const data = await response.json();
     const totalItems = await response.headers.get("X-Total-Count");
@@ -79,5 +83,52 @@ export async function fetchProductsByFilters(filter, sort, pagination) {
   } catch (error) {
     console.error(error);
     return { data: { products: [], totalItems: 0 }, error: error.message };
+  }
+}
+
+export async function createProduct(product) {
+  try {
+    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/products`, {
+      method: "POST",
+      body: JSON.stringify(product),
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      throw new Error(
+        `Failed to add Product: ${response.status} ${response.statusText}`
+      );
+    }
+    const data = await response.json();
+    return { data };
+  } catch (error) {
+    console.error("Error add to Product:", error.message);
+    return { data: null, error: error.message };
+  }
+}
+
+export async function updateProduct(update) {
+  try {
+    const response = await fetch(
+      `${process.env.REACT_APP_BASE_URL}/products/${update.id}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify(update),
+        headers: {
+          "content-type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error(
+        `Failed to update product: ${response.status} ${response.statusText}`
+      );
+    }
+    const data = await response.json();
+    return { data };
+  } catch (error) {
+    console.error("Error to update product:", error.message);
+    return { data: null, error: error.message };
   }
 }

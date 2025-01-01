@@ -1,8 +1,6 @@
-const BASE_URL = "http://localhost:8080";
-
 export async function addToCart(item) {
   try {
-    const response = await fetch(`${BASE_URL}/cart`, {
+    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/cart`, {
       method: "POST",
       body: JSON.stringify(item),
       headers: {
@@ -24,7 +22,7 @@ export async function addToCart(item) {
 
 export async function fetchCartItemsByUserId(userId) {
   try {
-    const response = await fetch(`${BASE_URL}/cart?userId=${userId}`);
+    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/cart?userId=${userId}`);
     if (!response.ok) {
       throw new Error(
         `Failed to fetch cart items: ${response.status} ${response.statusText}`
@@ -40,7 +38,7 @@ export async function fetchCartItemsByUserId(userId) {
 
 export async function updateCart(update) {
   try {
-    const response = await fetch(`${BASE_URL}/cart/${update.id}`, {
+    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/cart/${update.id}`, {
       method: "PATCH",
       body: JSON.stringify(update),
       headers: {
@@ -62,7 +60,7 @@ export async function updateCart(update) {
 
 export async function deleteItemFromCart(itemId) {
   try {
-    const response = await fetch(`${BASE_URL}/cart/${itemId}`, {
+    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/cart/${itemId}`, {
       method: "DELETE",
       headers: {
         "content-type": "application/json",

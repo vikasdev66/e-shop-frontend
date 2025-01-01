@@ -5,6 +5,8 @@ import {
   fetchAllProductsCategories,
   fetchAllProductsBrands,
   fetchProductById,
+  createProduct,
+  updateProduct,
 } from "./productAPI";
 
 const initialState = {
@@ -15,6 +17,24 @@ const initialState = {
   status: "idle",
   totalItems: 0,
 };
+
+export const createProductAsync = createAsyncThunk(
+  "product/createProduct",
+  async (product) => {
+    const response = await createProduct(product);
+    // The value we return becomes the `fulfilled` action payload
+    return response.data;
+  }
+);
+
+export const updateProductAsync = createAsyncThunk(
+  "product/updateProduct",
+  async (update) => {
+    const response = await updateProduct(update);
+    // The value we return becomes the `fulfilled` action payload
+    return response.data;
+  }
+);
 
 export const fetchAllProductsAsync = createAsyncThunk(
   "product/fetchAllProducts",
@@ -68,7 +88,7 @@ export const productSlice = createSlice({
     increment: (state) => {
       state.value += 1;
     },
-    resetSelectedProduct: (state) => {
+    clearSelectedProduct: (state) => {
       state.selectedProduct = null;
     },
   },
@@ -109,16 +129,33 @@ export const productSlice = createSlice({
       .addCase(fetchProductByIdAsync.fulfilled, (state, action) => {
         state.status = "idle";
         state.selectedProduct = action.payload;
+      })
+      .addCase(createProductAsync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(createProductAsync.fulfilled, (state, action) => {
+        state.status = 'idle';
+        state.products.push(action.payload);
+      })
+      .addCase(updateProductAsync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(updateProductAsync.fulfilled, (state, action) => {
+        state.status = 'idle';
+        const index = state.products.findIndex(
+          (product) => product.id === action.payload.id
+        );
+        state.products[index] = action.payload;
       });
   },
 });
 
-export const { increment, resetSelectedProduct } = productSlice.actions;
+export const { increment, clearSelectedProduct } = productSlice.actions;
 
 export const selectAllProducts = (state) => state.product.products;
 export const selectTotalItems = (state) => state.product.totalItems;
-export const selectAllProductsBrands = (state) => state.product.brands;
-export const selectAllProductsCategories = (state) => state.product.categories;
+export const selectBrands = (state) => state.product.brands;
+export const selectCategories = (state) => state.product.categories;
 export const selectProductById = (state) => state.product.selectedProduct;
 
 export default productSlice.reducer;

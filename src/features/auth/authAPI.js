@@ -1,8 +1,6 @@
-const BASE_URL = "http://localhost:8080";
-
 export async function createUser(userData) {
   try {
-    const response = await fetch(`${BASE_URL}/users`, {
+    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/users`, {
       method: "POST",
       body: JSON.stringify(userData),
       headers: {
@@ -26,7 +24,9 @@ export async function checkUser(loginInfo) {
   try {
     const email = loginInfo.email;
     const password = loginInfo.password;
-    const response = await fetch(`${BASE_URL}/users?email=` + email);
+    const response = await fetch(
+      `${process.env.REACT_APP_BASE_URL}/users?email=` + email
+    );
     if (!response.ok) {
       throw new Error(
         `Failed to verify user: ${response.status} ${response.statusText}`

@@ -7,7 +7,7 @@ import {
   selectProductById,
   fetchProductByIdAsync,
   clearSelectedProduct,
-} from "../productSlice";
+} from "../../product-list/productSlice";
 import { selectCart, updateCartAsync } from "../../cart/cartSlice";
 import { selectLoggedInUser } from "../../auth/authSlice";
 import { addToCartAsync } from "../../cart/cartSlice";
@@ -40,7 +40,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function ProductDetail() {
+export default function AdminProductDetail() {
   const dispatch = useDispatch();
   const cartItems = useSelector(selectCart);
   const [selectedColor, setSelectedColor] = useState(colors[0]);
@@ -51,7 +51,7 @@ export default function ProductDetail() {
 
   const handleAddToCart = (e) => {
     e.preventDefault();
-    const cartItem = cartItems.filter((item) => item.id === product.id)
+    const cartItem = cartItems.filter((item) => item.id === product.id);
     if (cartItem.length) {
       if (cartItem[0].minimumOrderQuantity > cartItem[0].quantity)
         dispatch(

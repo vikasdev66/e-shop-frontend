@@ -5,10 +5,11 @@ import {
   ShoppingCartIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectCart } from "../cart/cartSlice";
 import { Loading } from "../loading/Loading";
+import { selectUserInfo } from "../user/userSlice";
 
 const user = {
   name: "Tom Cook",
@@ -18,10 +19,8 @@ const user = {
 };
 
 const navigation = [
-  { name: "Dashboard", href: "#", current: true },
-  { name: "Team", href: "#", current: false },
-  { name: "Projects", href: "#", current: false },
-  { name: "Calendar", href: "#", current: false },
+  { name: "Dashboard", link: "/", user: true },
+  { name: "Admin", link: "/admin", admin: true },
 ];
 
 const userNavigation = [
@@ -36,6 +35,7 @@ function classNames(...classes) {
 
 export default function Navbar({ children }) {
   const cartItems = useSelector(selectCart);
+  const user = useSelector(selectUserInfo);
 
   return (
     <>
@@ -57,21 +57,25 @@ export default function Navbar({ children }) {
                     </div>
                     <div className="hidden md:block">
                       <div className="ml-10 flex items-baseline space-x-4">
-                        {navigation.map((item) => (
-                          <a
-                            key={item.name}
-                            href={item.href}
-                            className={classNames(
-                              item.current
-                                ? "bg-gray-900 text-white"
-                                : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                              "rounded-md px-3 py-2 text-sm font-medium"
-                            )}
-                            aria-current={item.current ? "page" : undefined}
-                          >
-                            {item.name}
-                          </a>
-                        ))}
+                        {navigation.map((item) =>
+                          item[user?.userInfo?.role] ? (
+                            <NavLink
+                              key={item.name}
+                              to={item.link}
+                              className={({ isActive }) =>
+                                classNames(
+                                  isActive
+                                    ? "bg-gray-900 text-white"
+                                    : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                                  "rounded-md px-3 py-2 text-sm font-medium"
+                                )
+                              }
+                              aria-current={item.current ? "page" : undefined}
+                            >
+                              {item.name}
+                            </NavLink>
+                          ) : null
+                        )}
                       </div>
                     </div>
                   </div>
@@ -103,12 +107,22 @@ export default function Navbar({ children }) {
                       {/* Profile dropdown */}
                       <Menu as="div" className="relative ml-3">
                         <div>
-                          <Menu.Button className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                          <Menu.Button
+                            className={`flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none ${
+                              !user?.userInfo?.imageUrl
+                                ? "ring-2 ring-white ring-offset-2 ring-offset-gray-800"
+                                : "focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                            }`}
+                          >
                             <span className="sr-only">Open user menu</span>
                             <img
-                              className="h-8 w-8 rounded-full"
-                              src={user.imageUrl}
-                              alt=""
+                              className={`h-8 w-8 rounded-full ${
+                                !user?.userInfo?.imageUrl
+                                  ? "text-white flex items-center justify-center"
+                                  : ""
+                              }`}
+                              src={user?.userInfo?.imageUrl}
+                              alt={user?.userInfo?.name[0]}
                             />
                           </Menu.Button>
                         </div>
@@ -125,16 +139,18 @@ export default function Navbar({ children }) {
                             {userNavigation.map((item) => (
                               <Menu.Item key={item.name}>
                                 {({ active }) => (
-                                  <Link
+                                  <NavLink
                                     to={item.link}
                                     // href={item.link}
-                                    className={classNames(
-                                      active ? "bg-gray-100" : "",
-                                      "block px-4 py-2 text-sm text-gray-700"
-                                    )}
+                                    className={({ isActive }) =>
+                                      classNames(
+                                        isActive ? "bg-gray-100" : "",
+                                        "block px-4 py-2 text-sm text-gray-700"
+                                      )
+                                    }
                                   >
                                     {item.name}
-                                  </Link>
+                                  </NavLink>
                                 )}
                               </Menu.Item>
                             ))}

@@ -1,8 +1,6 @@
-const BASE_URL = "http://localhost:8080";
-
 export async function createOrder(order) {
   try {
-    const response = await fetch(`${BASE_URL}/orders`, {
+    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/orders`, {
       method: "POST",
       body: JSON.stringify(order),
       headers: {
@@ -24,7 +22,7 @@ export async function createOrder(order) {
 
 export async function fetchOrders(userId) {
   try {
-    const response = await fetch(`${BASE_URL}/orders?userId=${userId}`);
+    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/orders?userId=${userId}`);
     if (!response.ok) {
       throw new Error(
         `Failed to place order: ${response.status} ${response.statusText}`

@@ -8,7 +8,7 @@ import {
   selectCategories,
   fetchAllProductsBrandsAsync,
   fetchAllProductsCategoriesAsync,
-} from "../productSlice";
+} from "../../product-list/productSlice";
 import {
   Dialog,
   DialogBackdrop,
@@ -52,7 +52,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function ProductList() {
+export default function AdminProductList() {
   const products = useSelector(selectAllProducts);
   const brands = useSelector(selectBrands);
   const categories = useSelector(selectCategories);
@@ -62,7 +62,6 @@ export default function ProductList() {
   const [filter, setFilter] = useState({});
   const [sort, setSort] = useState({});
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState();
 
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
@@ -388,16 +387,29 @@ export default function ProductList() {
 
               {/* Product grid */}
               <div className="lg:col-span-3">
+                <div>
+                  <Link
+                    to={"/admin/product-form"}
+                    className="mx-10 rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
+                  >
+                    Add Product
+                  </Link>
+                  {/* <button >
+                    Add Product
+                  </button> */}
+                </div>
                 <div className="bg-white">
                   <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6 sm:py-0 lg:max-w-7xl lg:px-8">
                     <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-                      {products.map((product) =>
-                        product.deleted ? (
-                          <></>
-                        ) : (
+                      {products.map((product) => (
+                        <div
+                          div
+                          key={product.id}
+                          className="flex flex-col h-full"
+                        >
                           <Link
-                            key={product.id}
                             to={`/product-detail/${product.id}`}
+                            className="h-full"
                           >
                             <div className="group relative flex flex-col h-full border-solid border-2 p-2 border-gray-200">
                               <img
@@ -436,10 +448,25 @@ export default function ProductList() {
                                   </p>
                                 </div>
                               </div>
+                              {product.deleted && (
+                                <div>
+                                  <p className="text-red-400">
+                                    product deleted
+                                  </p>
+                                </div>
+                              )}
                             </div>
                           </Link>
-                        )
-                      )}
+                          <div className="mt-2">
+                            <Link
+                              to={`/admin/product-form/edit/${product.id}`}
+                              className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                            >
+                              Edit Product
+                            </Link>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
