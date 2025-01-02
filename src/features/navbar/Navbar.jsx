@@ -8,19 +8,12 @@ import {
 import { Link, NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectCart } from "../cart/cartSlice";
-import { Loading } from "../loading/Loading";
 import { selectUserInfo } from "../user/userSlice";
 
-const user = {
-  name: "Tom Cook",
-  email: "tom@example.com",
-  imageUrl:
-    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-};
-
 const navigation = [
-  { name: "Dashboard", link: "/", user: true },
+  { name: "Dashboard", link: "/", admin: true, user: true },
   { name: "Admin", link: "/admin", admin: true },
+  { name: "Orders", link: "/admin/orders", admin: true },
 ];
 
 const userNavigation = [
@@ -71,6 +64,7 @@ export default function Navbar({ children }) {
                                 )
                               }
                               aria-current={item.current ? "page" : undefined}
+                              end
                             >
                               {item.name}
                             </NavLink>
@@ -144,7 +138,7 @@ export default function Navbar({ children }) {
                                     // href={item.link}
                                     className={({ isActive }) =>
                                       classNames(
-                                        isActive ? "bg-gray-100" : "",
+                                        isActive ? "bg-gray-200" : "hover:bg-gray-100",
                                         "block px-4 py-2 text-sm text-gray-700"
                                       )
                                     }
@@ -256,11 +250,9 @@ export default function Navbar({ children }) {
           </div>
         </header>
         <main>
-          <Loading>
-            <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-              {children}
-            </div>
-          </Loading>
+          <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+            {children}
+          </div>
         </main>
       </div>
     </>

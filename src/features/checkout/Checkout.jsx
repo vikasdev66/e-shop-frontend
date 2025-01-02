@@ -11,16 +11,17 @@ import {
   createAddressAsync,
   selectUserInfo,
 } from "../user/userSlice";
-import { createOrderAsync, selectOrders } from "../order/orderSlice";
+import { createOrderAsync, selectOrdersDetails } from "../order/orderSlice";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import { Link, Navigate } from "react-router-dom";
 import { MenuItem } from "@headlessui/react";
 import { useForm } from "react-hook-form";
+import { discountedPrice, subTotalPrice } from "../../app/constants";
 
 export default function Checkout() {
   const cartItems = useSelector(selectCart);
   const user = useSelector(selectUserInfo);
-  const order = useSelector(selectOrders);
+  const order = useSelector(selectOrdersDetails);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("cash");
   const [messageApi, contextHolder] = message.useMessage();
@@ -70,9 +71,7 @@ export default function Checkout() {
             title: item.title,
             description: item.description,
             category: item.category,
-            price: (item.price * (1 - item.discountPercentage / 100)).toFixed(
-              2
-            ),
+            price: Number(discountedPrice(item)),
             warrantyInformation: item.warrantyInformation,
             thumbnail: item.thumbnail,
             brand: item.brand,
@@ -85,18 +84,7 @@ export default function Checkout() {
         paymentMethod: paymentMethod,
         status: "pending",
         datePlaced: currentDate,
-        subTotal: cartItems
-          .reduce(
-            (amount, item) =>
-              item
-                ? amount +
-                  ((item.price * (1 - item.discountPercentage / 100)).toFixed(
-                    2
-                  ) * item.quantity || 0)
-                : amount,
-            0
-          )
-          .toFixed(2),
+        subTotal: Number(subTotalPrice(cartItems)),
       };
       dispatch(createOrderAsync(order));
     } else {
@@ -520,13 +508,7 @@ export default function Checkout() {
                                 <h3>
                                   <a href={item.href}>{item.title}</a>
                                 </h3>
-                                <p className="ml-4">
-                                  $
-                                  {(
-                                    item.price *
-                                    (1 - item.discountPercentage / 100)
-                                  ).toFixed(2)}
-                                </p>
+                                <p className="ml-4">${discountedPrice(item)}</p>
                               </div>
                               <p className="mt-1 text-sm text-gray-500">
                                 {item.brand}
@@ -579,23 +561,7 @@ export default function Checkout() {
               <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
                 <div className="flex justify-between text-base font-medium text-gray-900">
                   <p>Subtotal</p>
-                  <p>
-                    $
-                    {cartItems &&
-                      cartItems
-                        .reduce(
-                          (amount, item) =>
-                            item
-                              ? amount +
-                                ((
-                                  item.price *
-                                  (1 - item.discountPercentage / 100)
-                                ).toFixed(2) * item.quantity || 0)
-                              : amount,
-                          0
-                        )
-                        .toFixed(2)}
-                  </p>
+                  <p>${cartItems && subTotalPrice(cartItems)}</p>
                 </div>
                 <p className="mt-0.5 text-sm text-gray-500">
                   Shipping and taxes calculated at checkout.

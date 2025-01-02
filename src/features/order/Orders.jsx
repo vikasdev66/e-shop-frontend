@@ -1,13 +1,28 @@
 import React, { useEffect } from "react";
-import { selectOrders, fetchOrdersAsync } from "./orderSlice";
+import { selectOrdersDetails, fetchOrdersAsync } from "./orderSlice";
 import { selectLoggedInUser } from "../auth/authSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
 export default function Orders() {
   const dispatch = useDispatch();
-  const order = useSelector(selectOrders);
+  const order = useSelector(selectOrdersDetails);
   const user = useSelector(selectLoggedInUser);
+
+  const chooseColor = (status) => {
+    switch (status) {
+      case "pending":
+        return "bg-purple-200 text-purple-600";
+      case "dispatched":
+        return "bg-yellow-200 text-yellow-600";
+      case "delivered":
+        return "bg-green-200 text-green-600";
+      case "cancelled":
+        return "bg-red-200 text-red-600";
+      default:
+        return "bg-purple-200 text-purple-600";
+    }
+  };
 
   useEffect(() => {
     dispatch(fetchOrdersAsync(user?.id));
@@ -36,6 +51,13 @@ export default function Orders() {
                     Total amount:{" "}
                     <span className="font-medium">${order.subTotal}</span>
                   </div>
+                </div>
+                <div
+                  className={`${chooseColor(
+                    order?.status
+                  )} py-1 px-3 rounded-full text-xs`}
+                >
+                  {order?.status}
                 </div>
                 {/* Buttons */}
                 {/* <div className="flex space-x-4">
