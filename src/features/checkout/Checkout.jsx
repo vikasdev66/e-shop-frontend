@@ -376,9 +376,9 @@ export default function Checkout() {
                   {/* Address list */}
                   <ul role="list" className="">
                     {user.addresses.length &&
-                      user.addresses.map((address) => (
+                      user.addresses.map((address, index) => (
                         <li
-                          key={address.id}
+                          key={index}
                           className="flex justify-between gap-x-6 py-5 px-5 border-solid border-2 border-gray-200"
                         >
                           <div className="flex min-w-0 gap-x-4">
@@ -486,8 +486,8 @@ export default function Checkout() {
                 <div className="flow-root">
                   <ul role="list" className="-my-6 divide-y divide-gray-200">
                     {cartItems &&
-                      cartItems.map((item) => (
-                        <li key={MenuItem.id} className="flex py-6">
+                      cartItems.map((item, index) => (
+                        <li key={index} className="flex py-6">
                           <div className="size-24 shrink-0 overflow-hidden rounded-md border border-gray-200">
                             <Link to={`/product-detail/${item.id}`}>
                               <img

@@ -9,7 +9,7 @@ import {
   clearSelectedProduct,
 } from "../productSlice";
 import { selectCart, updateCartAsync } from "../../cart/cartSlice";
-import { selectLoggedInUser } from "../../auth/authSlice";
+import { selectUserInfo } from "../../user/userSlice";
 import { addToCartAsync } from "../../cart/cartSlice";
 import { discountedPrice } from "../../../app/constants";
 
@@ -47,7 +47,7 @@ export default function ProductDetail() {
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const [selectedSize, setSelectedSize] = useState(sizes[2]);
   const product = useSelector(selectProductById);
-  const user = useSelector(selectLoggedInUser);
+  const user = useSelector(selectUserInfo);
   const params = useParams();
 
   const handleAddToCart = (e) => {
@@ -64,9 +64,9 @@ export default function ProductDetail() {
     } else {
       dispatch(
         addToCartAsync({
-          product: product.id,
+          product: product?.id,
           quantity: 1,
-          user: user.id,
+          user: user?.userInfo?.id,
         })
       );
     }
@@ -88,8 +88,8 @@ export default function ProductDetail() {
               className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8"
             >
               {product.breadcrumbs &&
-                product.breadcrumbs.map((breadcrumb) => (
-                  <li key={breadcrumb.id}>
+                product.breadcrumbs.map((breadcrumb, index) => (
+                  <li key={index}>
                     <div className="flex items-center">
                       <a
                         href={breadcrumb.href}
@@ -174,9 +174,9 @@ export default function ProductDetail() {
                 <h3 className="sr-only">Reviews</h3>
                 <div className="flex items-center">
                   <div className="flex items-center">
-                    {[0, 1, 2, 3, 4].map((rating) => (
+                    {[0, 1, 2, 3, 4].map((rating, index) => (
                       <StarIcon
-                        key={rating}
+                        key={index}
                         aria-hidden="true"
                         className={classNames(
                           product.rating > rating
@@ -202,9 +202,9 @@ export default function ProductDetail() {
                       onChange={setSelectedColor}
                       className="flex items-center gap-x-3"
                     >
-                      {colors.map((color) => (
+                      {colors.map((color, index) => (
                         <Radio
-                          key={color.name}
+                          key={index}
                           value={color}
                           aria-label={color.name}
                           className={classNames(
@@ -243,9 +243,9 @@ export default function ProductDetail() {
                       onChange={setSelectedSize}
                       className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4"
                     >
-                      {sizes.map((size) => (
+                      {sizes.map((size, index) => (
                         <Radio
-                          key={size.name}
+                          key={index}
                           value={size}
                           disabled={!size.inStock}
                           className={classNames(
@@ -318,8 +318,8 @@ export default function ProductDetail() {
 
                 <div className="mt-4">
                   <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
-                    {highlights.map((highlight) => (
-                      <li key={highlight} className="text-gray-400">
+                    {highlights.map((highlight, index) => (
+                      <li key={index} className="text-gray-400">
                         <span className="text-gray-600">{highlight}</span>
                       </li>
                     ))}

@@ -153,9 +153,9 @@ export default function AdminProductList() {
               <form className="mt-4 border-t border-gray-200">
                 <h3 className="sr-only">Categories</h3>
 
-                {filters.map((section) => (
+                {filters.map((section, index) => (
                   <Disclosure
-                    key={section.id}
+                    key={index}
                     as="div"
                     className="border-t border-gray-200 px-4 py-6"
                   >
@@ -179,7 +179,7 @@ export default function AdminProductList() {
                     <DisclosurePanel className="pt-6">
                       <div className="space-y-6">
                         {section.options.map((option, optionIdx) => (
-                          <div key={option.value} className="flex gap-3">
+                          <div key={optionIdx} className="flex gap-3">
                             <div className="flex h-5 shrink-0 items-center">
                               <div className="group grid size-4 grid-cols-1">
                                 <input
@@ -257,8 +257,8 @@ export default function AdminProductList() {
                   className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                 >
                   <div className="py-1">
-                    {sortOptions.map((option) => (
-                      <MenuItem key={option.name}>
+                    {sortOptions.map((option, index) => (
+                      <MenuItem key={index}>
                         <p
                           onClick={(e) => {
                             handleSort(e, option);
@@ -306,9 +306,9 @@ export default function AdminProductList() {
               {/* Filters */}
               <form className="hidden lg:block">
                 <h3 className="sr-only">Categories</h3>
-                {filters.map((section) => (
+                {filters.map((section, index) => (
                   <Disclosure
-                    key={section.id}
+                    key={index}
                     as="div"
                     className="border-b border-gray-200 py-6"
                   >
@@ -332,7 +332,7 @@ export default function AdminProductList() {
                     <DisclosurePanel className="pt-6">
                       <div className="space-y-4">
                         {section.options.map((option, optionIdx) => (
-                          <div key={option.value} className="flex gap-3">
+                          <div key={optionIdx} className="flex gap-3">
                             <div className="flex h-5 shrink-0 items-center">
                               <div className="group grid size-4 grid-cols-1">
                                 <input
@@ -401,10 +401,10 @@ export default function AdminProductList() {
                 <div className="bg-white">
                   <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6 sm:py-0 lg:max-w-7xl lg:px-8">
                     <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-                      {products.map((product) => (
+                      {products.map((product, index) => (
                         <div
                           div
-                          key={product.id}
+                          key={index}
                           className="flex flex-col h-full"
                         >
                           <Link
@@ -445,7 +445,7 @@ export default function AdminProductList() {
                                 </div>
                               </div>
                               {product.deleted && (
-                                <div >
+                                <div>
                                   <p className="text-red-400">
                                     product deleted
                                   </p>

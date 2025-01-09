@@ -319,7 +319,7 @@ export default function UserProfile() {
           {user.addresses.map((address, index) => (
             <div>
               <li
-                key={address.id}
+                key={index}
                 className="flex justify-between gap-x-6 py-5 px-5 border-solid border-2 border-gray-200"
               >
                 <div className="flex min-w-0 gap-x-4">

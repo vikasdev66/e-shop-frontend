@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { selectOrdersDetails, fetchOrdersAsync } from "./orderSlice";
-import { selectLoggedInUser } from "../auth/authSlice";
+import { selectUserInfo } from "../user/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 import { Link } from "react-router-dom";
@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 export default function Orders() {
   const dispatch = useDispatch();
   const order = useSelector(selectOrdersDetails);
-  const user = useSelector(selectLoggedInUser);
+  const user = useSelector(selectUserInfo);
 
   const chooseColor = (status) => {
     switch (status) {
@@ -26,15 +26,15 @@ export default function Orders() {
   };
 
   useEffect(() => {
-    dispatch(fetchOrdersAsync(user?.id));
-  }, [user?.id, dispatch]);
+    dispatch(fetchOrdersAsync(user?.userInfo?.id));
+  }, [user?.userInfo?.id, dispatch]);
   return (
     <div>
       {order.orders.length && (
         <div className="max-w-4xl mx-auto p-4">
-          {order.orders.map((order) => (
+          {order.orders.map((order, index) => (
             <div
-              key={order.id}
+              key={index}
               className="border border-gray-300 rounded-lg p-6 mb-6 shadow-sm"
             >
               {/* Order Header */}
@@ -73,9 +73,9 @@ export default function Orders() {
                 </div> */}
               </div>
 
-              {order.products.map((product) => (
+              {order.products.map((product, index) => (
                 <div
-                  key={product.productId}
+                  key={index}
                   className="flex items-start justify-between border-t border-gray-200 pt-4 mt-4"
                 >
                   {/* Product Image */}

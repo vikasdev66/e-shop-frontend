@@ -153,8 +153,10 @@ export default function ProductForm() {
                   })}
                 >
                   <option value="">--choose brand--</option>
-                  {brands.map((brand) => (
-                    <option value={brand.value}>{brand.label}</option>
+                  {brands.map((brand, index) => (
+                    <option key={index} value={brand.value}>
+                      {brand.label}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -173,8 +175,10 @@ export default function ProductForm() {
                   })}
                 >
                   <option value="">--choose category--</option>
-                  {categories.map((category) => (
-                    <option value={category.value}>{category.label}</option>
+                  {categories.map((category, index) => (
+                    <option key={index} value={category.value}>
+                      {category.label}
+                    </option>
                   ))}
                 </select>
               </div>

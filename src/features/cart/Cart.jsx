@@ -6,12 +6,10 @@ import {
   deleteItemFromCartAsync,
 } from "./cartSlice";
 import { Link } from "react-router-dom";
-import { selectLoggedInUser } from "../auth/authSlice";
 import { discountedPrice, subTotalPrice } from "../../app/constants";
 
 export default function Cart() {
   const cartItems = useSelector(selectCart);
-  const user = useSelector(selectLoggedInUser);
   const dispatch = useDispatch();
   const [open, setOpen] = useState(true);
 
@@ -34,12 +32,12 @@ export default function Cart() {
         <div className="flow-root">
           <ul role="list" className="-my-6 divide-y divide-gray-200">
             {cartItems &&
-              cartItems.map((item) => {
+              cartItems.map((item, index) => {
                 if (!item) {
                   return <></>;
                 }
                 return (
-                  <li key={item.id} className="flex py-6">
+                  <li key={index} className="flex py-6">
                     <div className="size-24 shrink-0 overflow-hidden rounded-md border border-gray-200">
                       <Link to={`/product-detail/${item.product.id}`}>
                         <img
