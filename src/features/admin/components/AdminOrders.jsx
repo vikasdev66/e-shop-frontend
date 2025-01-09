@@ -39,7 +39,6 @@ export default function AdminOrders() {
   };
   const handleSort = (sortOption) => {
     const sort = { _sort: sortOption.sort, _order: sortOption.order };
-    console.log({ sort });
     setSort(sort);
   };
   const chooseColor = (status) => {
@@ -140,14 +139,14 @@ export default function AdminOrders() {
                     <td className="py-3 px-6 text-center">
                       <div className="">
                         <div>
-                          <strong>{order?.name}</strong>,
+                          <strong>{order?.address?.name}</strong>,
                         </div>
-                        <div>{order?.street},</div>
-                        <div>{order?.city}, </div>
-                        <div>{order?.state}, </div>
+                        <div>{order?.address?.street},</div>
+                        <div>{order?.address?.city}, </div>
+                        <div>{order?.address?.state}, </div>
                         {/* <div>{order.country},</div> */}
-                        <div>{order?.pinCode}, </div>
-                        <div>{order?.phoneNumber}, </div>
+                        <div>{order?.address?.pinCode}, </div>
+                        <div>{order?.address?.phoneNumber}, </div>
                       </div>
                     </td>
                     <td className="py-3 px-6 text-center">

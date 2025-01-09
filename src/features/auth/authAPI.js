@@ -1,12 +1,15 @@
 export async function createUser(userData) {
   try {
-    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/users`, {
-      method: "POST",
-      body: JSON.stringify(userData),
-      headers: {
-        "content-type": "application/json",
-      },
-    });
+    const response = await fetch(
+      `${process.env.REACT_APP_BASE_URL}/auth/signup`,
+      {
+        method: "POST",
+        body: JSON.stringify(userData),
+        headers: {
+          "content-type": "application/json",
+        },
+      }
+    );
     if (!response.ok) {
       throw new Error(
         `Failed to send user data: ${response.status} ${response.statusText}`
@@ -25,22 +28,23 @@ export async function checkUser(loginInfo) {
     const email = loginInfo.email;
     const password = loginInfo.password;
     const response = await fetch(
-      `${process.env.REACT_APP_BASE_URL}/users?email=` + email
+      `${process.env.REACT_APP_BASE_URL}/auth/login`,
+      {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+        headers: {
+          "content-type": "application/json",
+        },
+      }
     );
     if (!response.ok) {
-      throw new Error(
-        `Failed to verify user: ${response.status} ${response.statusText}`
-      );
+      throw new Error("invalid credentials");
     }
     const data = await response.json();
-    if (data.length) {
-      if (data[0].password === password) {
-        return { data: data[0] };
-      } else {
-        return { error: "wrong credentials" };
-      }
+    if (data.message) {
+      return { error: "invalid credentials" };
     }
-    return { error: "wrong credentials" };
+    return { data };
   } catch (error) {
     console.error("Error verifying user:", error.message);
     return { data: null, error: error.message };

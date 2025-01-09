@@ -52,21 +52,21 @@ export default function ProductDetail() {
 
   const handleAddToCart = (e) => {
     e.preventDefault();
-    const cartItem = cartItems.filter((item) => item.id === product.id);
+    const cartItem = cartItems.filter((item) => item.product.id === product.id);
     if (cartItem.length) {
-      if (cartItem[0].minimumOrderQuantity > cartItem[0].quantity)
+      if (cartItem[0].product.stock > cartItem[0].quantity)
         dispatch(
           updateCartAsync({
-            ...cartItem[0],
+            id: cartItem[0].id,
             quantity: Number(cartItem[0].quantity + 1),
           })
         );
     } else {
       dispatch(
         addToCartAsync({
-          ...product,
+          product: product.id,
           quantity: 1,
-          userId: user.id,
+          user: user.id,
         })
       );
     }

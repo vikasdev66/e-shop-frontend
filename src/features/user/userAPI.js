@@ -1,6 +1,8 @@
 export async function fetchLoggedInUser(userId) {
   try {
-    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/users/${userId}`);
+    const response = await fetch(
+      `${process.env.REACT_APP_BASE_URL}/users/${userId}`
+    );
     if (!response.ok) {
       throw new Error(
         `Failed to fetch user details: ${response.status} ${response.statusText}`
@@ -16,13 +18,16 @@ export async function fetchLoggedInUser(userId) {
 
 export async function updateUser(update) {
   try {
-    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/users/${update.id}`, {
-      method: "PATCH",
-      body: JSON.stringify(update),
-      headers: {
-        "content-type": "application/json",
-      },
-    });
+    const response = await fetch(
+      `${process.env.REACT_APP_BASE_URL}/users/${update.id}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify(update),
+        headers: {
+          "content-type": "application/json",
+        },
+      }
+    );
     if (!response.ok) {
       throw new Error(
         `Failed to update user: ${response.status} ${response.statusText}`
@@ -38,13 +43,16 @@ export async function updateUser(update) {
 
 export async function createAddress(address) {
   try {
-    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/addresses`, {
-      method: "POST",
-      body: JSON.stringify(address),
-      headers: {
-        "content-type": "application/json",
-      },
-    });
+    const response = await fetch(
+      `${process.env.REACT_APP_BASE_URL}/addresses`,
+      {
+        method: "POST",
+        body: JSON.stringify(address),
+        headers: {
+          "content-type": "application/json",
+        },
+      }
+    );
     if (!response.ok) {
       throw new Error(
         `Failed to send address data: ${response.status} ${response.statusText}`
@@ -60,7 +68,9 @@ export async function createAddress(address) {
 
 export async function fetchAddressByUserId(userId) {
   try {
-    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/addresses?userId=${userId}`);
+    const response = await fetch(
+      `${process.env.REACT_APP_BASE_URL}/addresses?userId=${userId}`
+    );
     if (!response.ok) {
       throw new Error(
         `Failed to fetch address: ${response.status} ${response.statusText}`
@@ -76,13 +86,16 @@ export async function fetchAddressByUserId(userId) {
 
 export async function updateAddress(update) {
   try {
-    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/addresses/${update.id}`, {
-      method: "PATCH",
-      body: JSON.stringify(update),
-      headers: {
-        "content-type": "application/json",
-      },
-    });
+    const response = await fetch(
+      `${process.env.REACT_APP_BASE_URL}/addresses/${update.id}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify(update),
+        headers: {
+          "content-type": "application/json",
+        },
+      }
+    );
     if (!response.ok) {
       throw new Error(
         `Failed to update address: ${response.status} ${response.statusText}`
@@ -98,19 +111,22 @@ export async function updateAddress(update) {
 
 export async function deleteAddress(addressId) {
   try {
-    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/addresses/${addressId}`, {
-      method: "DELETE",
-      headers: {
-        "content-type": "application/json",
-      },
-    });
+    const response = await fetch(
+      `${process.env.REACT_APP_BASE_URL}/addresses/${addressId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "content-type": "application/json",
+        },
+      }
+    );
     if (!response.ok) {
       throw new Error(
         `Failed to delete address: ${response.status} ${response.statusText}`
       );
     }
-    // const data = await response.json();
-    return { data: { id: addressId } };
+    const data = await response.json();
+    return { data: { id: data.id } };
   } catch (error) {
     console.error("Error to delete address:", error.message);
     return { data: null, error: error.message };

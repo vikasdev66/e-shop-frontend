@@ -35,7 +35,9 @@ export default function Checkout() {
   } = useForm();
 
   const handleQuantity = (e, item) => {
-    dispatch(updateCartAsync({ ...item, quantity: Number(e.target.value) }));
+    dispatch(
+      updateCartAsync({ id: item.id, quantity: Number(e.target.value) })
+    );
   };
 
   const handleRemove = (item) => {
@@ -59,31 +61,25 @@ export default function Checkout() {
 
   const handlePayAndOrder = () => {
     if (selectedAddress) {
-      const address = Object.fromEntries(
-        Object.entries(selectedAddress).filter(([key]) => key !== "id")
-      );
-      const date = new Date();
-      const currentDate = date.toLocaleDateString(); //  "mm/dd/yyyy"
       const order = {
         products: cartItems.map((item) => {
           return {
-            productId: item.id,
-            title: item.title,
-            description: item.description,
-            category: item.category,
-            price: Number(discountedPrice(item)),
-            warrantyInformation: item.warrantyInformation,
-            thumbnail: item.thumbnail,
-            brand: item.brand,
+            productId: item.product.id,
+            title: item.product.title,
+            description: item.product.description,
+            category: item.product.category,
+            price: Number(discountedPrice(item.product)),
+            thumbnail: item.product.thumbnail,
+            brand: item.product.brand,
             quantity: item.quantity,
           };
         }),
-        ...address,
-        addressId: selectedAddress?.id,
-        userId: user.userInfo.id,
+        totalItems: cartItems.length,
+        address: selectedAddress?.id,
+        user: user.userInfo.id,
         paymentMethod: paymentMethod,
         status: "pending",
-        datePlaced: currentDate,
+        paymentStatus: "successful",
         subTotal: Number(subTotalPrice(cartItems)),
       };
       dispatch(createOrderAsync(order));
@@ -99,8 +95,8 @@ export default function Checkout() {
     return <Navigate to={"/"} replace />;
   }
 
-  if (order.isRedirect) {
-    return <Navigate to={`/order-placed/${order.currentOrder.id}`} replace />;
+  if (order?.isRedirect) {
+    return <Navigate to={`/order-placed/${order?.currentOrder?.id}`} replace />;
   }
   return (
     <>
@@ -112,7 +108,7 @@ export default function Checkout() {
               className="p-5 bg-white mt-12"
               onSubmit={handleSubmit((data) => {
                 dispatch(
-                  createAddressAsync({ ...data, userId: user.userInfo.id })
+                  createAddressAsync({ ...data, user: user.userInfo.id })
                 );
                 reset();
               })}
@@ -495,8 +491,8 @@ export default function Checkout() {
                           <div className="size-24 shrink-0 overflow-hidden rounded-md border border-gray-200">
                             <Link to={`/product-detail/${item.id}`}>
                               <img
-                                alt={item.title}
-                                src={item.thumbnail}
+                                alt={item.product.title}
+                                src={item.product.thumbnail}
                                 className="size-full object-cover"
                               />
                             </Link>
@@ -506,12 +502,16 @@ export default function Checkout() {
                             <div>
                               <div className="flex justify-between text-base font-medium text-gray-900">
                                 <h3>
-                                  <a href={item.href}>{item.title}</a>
+                                  <a href={item.product.href}>
+                                    {item.product.title}
+                                  </a>
                                 </h3>
-                                <p className="ml-4">${discountedPrice(item)}</p>
+                                <p className="ml-4">
+                                  ${discountedPrice(item.product)}
+                                </p>
                               </div>
                               <p className="mt-1 text-sm text-gray-500">
-                                {item.brand}
+                                {item.product.brand}
                               </p>
                             </div>
                             <div className="flex flex-1 items-end justify-between text-sm">
@@ -529,13 +529,13 @@ export default function Checkout() {
                                     handleQuantity(e, item);
                                   }}
                                 >
-                                  {[
-                                    ...Array(item.minimumOrderQuantity).keys(),
-                                  ].map((que, index) => (
-                                    <option key={index} value={que + 1}>
-                                      {que + 1}
-                                    </option>
-                                  ))}
+                                  {[...Array(item.product.stock).keys()].map(
+                                    (que, index) => (
+                                      <option key={index} value={que + 1}>
+                                        {que + 1}
+                                      </option>
+                                    )
+                                  )}
                                 </select>
                               </div>
 

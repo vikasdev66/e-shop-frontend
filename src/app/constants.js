@@ -12,7 +12,7 @@ export function subTotalPrice(items) {
     ?.reduce(
       (amount, item) =>
         item
-          ? amount + (discountedPrice(item) * Number(item.quantity) || 0)
+          ? amount + (discountedPrice(item.product) * Number(item.quantity) || 0)
           : amount,
       0
     )

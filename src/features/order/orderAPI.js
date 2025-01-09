@@ -23,7 +23,7 @@ export async function createOrder(order) {
 export async function fetchOrders(userId) {
   try {
     const response = await fetch(
-      `${process.env.REACT_APP_BASE_URL}/orders?userId=${userId}`
+      `${process.env.REACT_APP_BASE_URL}/orders/own/?userId=${userId}`
     );
     if (!response.ok) {
       throw new Error(

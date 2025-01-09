@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { selectOrdersDetails, fetchOrdersAsync } from "./orderSlice";
 import { selectLoggedInUser } from "../auth/authSlice";
 import { useSelector, useDispatch } from "react-redux";
+import moment from "moment";
 import { Link } from "react-router-dom";
 
 export default function Orders() {
@@ -45,7 +46,9 @@ export default function Orders() {
                   </div>
                   <div className="text-sm text-gray-600">
                     Date placed:{" "}
-                    <span className="font-medium">{order.datePlaced}</span>
+                    <span className="font-medium">
+                      {moment(order.createdAt).format("DD-MM-YYYY")}
+                    </span>
                   </div>
                   <div className="text-sm text-gray-600">
                     Total amount:{" "}
@@ -124,16 +127,19 @@ export default function Orders() {
               <div className="flex justify-between gap-x-6 py-5 px-5 border-solid border-2 border-gray-200 text-gray-600">
                 <div className="flex min-w-0 gap-x-4">
                   <div className="min-w-0 flex-auto">
-                    <p className="text-sm/6 font-semibold">{order.name}</p>
+                    <p className="text-sm/6 font-semibold">
+                      {order.address.name}
+                    </p>
                     <p className="mt-1 truncate text-xs/5">
-                      {order.phoneNumber}
+                      {order.address.phoneNumber}
                     </p>
                   </div>
                 </div>
                 <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
                   <p className="text-sm/6">
-                    {order.street}, {order.city}, {order.state}, {order.country}
-                    , {order.pinCode}
+                    {order.address.street}, {order.address.city},{" "}
+                    {order.address.state}, {order.address.country},{" "}
+                    {order.address.pinCode}
                   </p>
                 </div>
               </div>
