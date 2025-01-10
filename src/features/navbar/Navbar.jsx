@@ -116,7 +116,7 @@ export default function Navbar({ children }) {
                                   : ""
                               }`}
                               src={user?.userInfo?.imageUrl}
-                              alt={user?.userInfo?.name[0]}
+                              alt={user?.userInfo?.name[0]?.toUpperCase()}
                             />
                           </Menu.Button>
                         </div>
@@ -138,7 +138,9 @@ export default function Navbar({ children }) {
                                     // href={item.link}
                                     className={({ isActive }) =>
                                       classNames(
-                                        isActive ? "bg-gray-200" : "hover:bg-gray-100",
+                                        isActive
+                                          ? "bg-gray-200"
+                                          : "hover:bg-gray-100",
                                         "block px-4 py-2 text-sm text-gray-700"
                                       )
                                     }
