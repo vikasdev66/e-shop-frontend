@@ -56,19 +56,45 @@ export const fetchProductByIdAsync = createAsyncThunk(
 
 export const fetchAllProductsBrandsAsync = createAsyncThunk(
   "product/fetchAllProductsBrands",
-  async () => {
-    const response = await fetchAllProductsBrands();
-    // The value we return becomes the `fulfilled` action payload
-    return response.data;
+  async (_, { getState }) => {
+    const state = getState();
+    const data = [];
+    const brands = state?.product?.products.map((product) => product.brand);
+    [...new Set(brands)].forEach((brand, index) => {
+      if (brand) {
+        data.push({
+          id: index,
+          value: brand,
+          label: brand,
+          checked: false,
+        });
+      }
+    });
+
+    return data;
   }
 );
 
 export const fetchAllProductsCategoriesAsync = createAsyncThunk(
   "product/fetchAllProductsCategories",
-  async () => {
-    const response = await fetchAllProductsCategories();
-    // The value we return becomes the `fulfilled` action payload
-    return response.data;
+  async (_, { getState }) => {
+    const state = getState();
+    const data = [];
+    const categories = state?.product?.products.map(
+      (product) => product.category
+    );
+    [...new Set(categories)].forEach((category, index) => {
+      if (category) {
+        data.push({
+          id: index,
+          value: category,
+          label: category,
+          checked: false,
+        });
+      }
+    });
+
+    return data;
   }
 );
 
@@ -131,17 +157,17 @@ export const productSlice = createSlice({
         state.selectedProduct = action.payload;
       })
       .addCase(createProductAsync.pending, (state) => {
-        state.status = 'loading';
+        state.status = "loading";
       })
       .addCase(createProductAsync.fulfilled, (state, action) => {
-        state.status = 'idle';
+        state.status = "idle";
         state.products.push(action.payload);
       })
       .addCase(updateProductAsync.pending, (state) => {
-        state.status = 'loading';
+        state.status = "loading";
       })
       .addCase(updateProductAsync.fulfilled, (state, action) => {
-        state.status = 'idle';
+        state.status = "idle";
         const index = state.products.findIndex(
           (product) => product.id === action.payload.id
         );

@@ -1,7 +1,7 @@
-export async function fetchLoggedInUser(userId) {
+export async function fetchLoggedInUser() {
   try {
     const response = await fetch(
-      `${process.env.REACT_APP_BASE_URL}/users/${userId}`
+      `${process.env.REACT_APP_BASE_URL}/users/own`
     );
     if (!response.ok) {
       throw new Error(
@@ -66,10 +66,10 @@ export async function createAddress(address) {
   }
 }
 
-export async function fetchAddressByUserId(userId) {
+export async function fetchAddressByUserId() {
   try {
     const response = await fetch(
-      `${process.env.REACT_APP_BASE_URL}/addresses?userId=${userId}`
+      `${process.env.REACT_APP_BASE_URL}/addresses/own`
     );
     if (!response.ok) {
       throw new Error(

@@ -95,7 +95,7 @@ export default function Checkout() {
     return <Navigate to={"/"} replace />;
   }
 
-  if (order?.isRedirect) {
+  if (order?.currentOrder?.id) {
     return <Navigate to={`/order-placed/${order?.currentOrder?.id}`} replace />;
   }
   return (
@@ -107,9 +107,7 @@ export default function Checkout() {
             <form
               className="p-5 bg-white mt-12"
               onSubmit={handleSubmit((data) => {
-                dispatch(
-                  createAddressAsync({ ...data, user: user.userInfo.id })
-                );
+                dispatch(createAddressAsync(data));
                 reset();
               })}
               noValidate

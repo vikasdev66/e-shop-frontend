@@ -11,13 +11,16 @@ import OrdersPage from "./pages/OrdersPage";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import OrderSuccessPage from "./pages/OrderSuccessPage";
 import UserProfilePage from "./pages/UserProfilePage";
-import { selectLoggedInUser } from "./features/auth/authSlice";
+import {
+  selectLoggedInUser,
+  checkAuthAsync,
+  selectUserChecked,
+} from "./features/auth/authSlice";
 import { useSelector, useDispatch } from "react-redux";
 import {
   fetchLoggedInUserAsync,
   fetchAddressByUserIdAsync,
 } from "./features/user/userSlice";
-import { setLoading } from "./features/loading/loadingSlice";
 import { fetchCartItemsByUserIdAsync } from "./features/cart/cartSlice";
 import SignOut from "./features/signOut/SignOut";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
@@ -132,7 +135,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "signOut",
+    path: "signout",
     element: (
       <Protected>
         <SignOut />
@@ -156,19 +159,23 @@ const router = createBrowserRouter([
 function App() {
   const dispatch = useDispatch();
   const user = useSelector(selectLoggedInUser);
+  const userChecked = useSelector(selectUserChecked);
 
   useEffect(() => {
-    dispatch(setLoading(true));
+    dispatch(checkAuthAsync());
+  }, [dispatch]);
+
+  useEffect(() => {
     if (user) {
-      dispatch(fetchLoggedInUserAsync(user.id));
-      dispatch(fetchCartItemsByUserIdAsync(user.id));
-      dispatch(fetchAddressByUserIdAsync(user.id));
+      dispatch(fetchLoggedInUserAsync());
+      dispatch(fetchCartItemsByUserIdAsync());
+      dispatch(fetchAddressByUserIdAsync());
     }
-    dispatch(setLoading(false));
-  }, [user?.id]);
+  }, [!!user, dispatch]);
+
   return (
     <div className="App">
-      <RouterProvider router={router} />
+      {userChecked && <RouterProvider router={router} />}
     </div>
   );
 }

@@ -20,9 +20,9 @@ export async function addToCart(item) {
   }
 }
 
-export async function fetchCartItemsByUserId(userId) {
+export async function fetchCartItemsByUserId() {
   try {
-    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/cart?userId=${userId}`);
+    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/cart`);
     if (!response.ok) {
       throw new Error(
         `Failed to fetch cart items: ${response.status} ${response.statusText}`
@@ -38,13 +38,16 @@ export async function fetchCartItemsByUserId(userId) {
 
 export async function updateCart(update) {
   try {
-    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/cart/${update.id}`, {
-      method: "PATCH",
-      body: JSON.stringify(update),
-      headers: {
-        "content-type": "application/json",
-      },
-    });
+    const response = await fetch(
+      `${process.env.REACT_APP_BASE_URL}/cart/${update.id}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify(update),
+        headers: {
+          "content-type": "application/json",
+        },
+      }
+    );
     if (!response.ok) {
       throw new Error(
         `Failed to update cart: ${response.status} ${response.statusText}`
@@ -60,12 +63,15 @@ export async function updateCart(update) {
 
 export async function deleteItemFromCart(itemId) {
   try {
-    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/cart/${itemId}`, {
-      method: "DELETE",
-      headers: {
-        "content-type": "application/json",
-      },
-    });
+    const response = await fetch(
+      `${process.env.REACT_APP_BASE_URL}/cart/${itemId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "content-type": "application/json",
+        },
+      }
+    );
     if (!response.ok) {
       throw new Error(
         `Failed to delete item from cart: ${response.status} ${response.statusText}`
@@ -75,6 +81,20 @@ export async function deleteItemFromCart(itemId) {
     return { data: { id: itemId } };
   } catch (error) {
     console.error("Error to delete item from cart:", error.message);
+    return { data: null, error: error.message };
+  }
+}
+
+export async function resetCart() {
+  try {
+    const response = await fetchCartItemsByUserId();
+    const items = response.data;
+    for (let item of items) {
+      await deleteItemFromCart(item.id);
+    }
+    return { status: "success" };
+  } catch (error) {
+    console.error("Error to reset cart:", error.message);
     return { data: null, error: error.message };
   }
 }

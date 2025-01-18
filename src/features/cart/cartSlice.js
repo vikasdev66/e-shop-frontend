@@ -4,6 +4,7 @@ import {
   fetchCartItemsByUserId,
   updateCart,
   deleteItemFromCart,
+  resetCart,
 } from "./cartAPI";
 
 const initialState = {
@@ -22,8 +23,8 @@ export const addToCartAsync = createAsyncThunk(
 
 export const fetchCartItemsByUserIdAsync = createAsyncThunk(
   "cart/fetchCartItemsByUserId",
-  async (userId) => {
-    const response = await fetchCartItemsByUserId(userId);
+  async () => {
+    const response = await fetchCartItemsByUserId();
     // The value we return becomes the `fulfilled` action payload
     return response.data;
   }
@@ -47,14 +48,19 @@ export const deleteItemFromCartAsync = createAsyncThunk(
   }
 );
 
+export const resetCartAsync = createAsyncThunk(
+  "cart/resetCart",
+  async () => {
+    const response = await resetCart();
+    // The value we return becomes the `fulfilled` action payload
+    return response.data;
+  }
+);
+
 export const cartSlice = createSlice({
   name: "cart",
   initialState,
-  reducers: {
-    resetCartItems: (state) => {
-      state.items = [];
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(addToCartAsync.pending, (state) => {
@@ -92,6 +98,13 @@ export const cartSlice = createSlice({
           );
           state.items.splice(index, 1);
         }
+      })
+      .addCase(resetCartAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(resetCartAsync.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.items = [];
       });
   },
 });

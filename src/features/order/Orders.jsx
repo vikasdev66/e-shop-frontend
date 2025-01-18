@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { selectOrdersDetails, fetchOrdersAsync } from "./orderSlice";
-import { selectUserInfo } from "../user/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 import { Link } from "react-router-dom";
@@ -8,7 +7,6 @@ import { Link } from "react-router-dom";
 export default function Orders() {
   const dispatch = useDispatch();
   const order = useSelector(selectOrdersDetails);
-  const user = useSelector(selectUserInfo);
 
   const chooseColor = (status) => {
     switch (status) {
@@ -26,13 +24,13 @@ export default function Orders() {
   };
 
   useEffect(() => {
-    dispatch(fetchOrdersAsync(user?.userInfo?.id));
-  }, [user?.userInfo?.id, dispatch]);
+    dispatch(fetchOrdersAsync());
+  }, [dispatch]);
   return (
     <div>
       {order.orders.length && (
         <div className="max-w-4xl mx-auto p-4">
-          {order.orders.map((order, index) => (
+          {order?.orders.map((order, index) => (
             <div
               key={index}
               className="border border-gray-300 rounded-lg p-6 mb-6 shadow-sm"

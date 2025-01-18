@@ -23,7 +23,7 @@ export async function createUser(userData) {
   }
 }
 
-export async function checkUser(loginInfo) {
+export async function loginUser(loginInfo) {
   try {
     const email = loginInfo.email;
     const password = loginInfo.password;
@@ -37,21 +37,36 @@ export async function checkUser(loginInfo) {
         },
       }
     );
-    if (!response.ok) {
-      throw new Error("invalid credentials");
+    if (response.ok) {
+      const data = await response.json();
+      return { data };
+    } else {
+      const error = await response.text();
+      throw new Error(error);
     }
-    const data = await response.json();
-    if (data.message) {
-      return { error: "invalid credentials" };
-    }
-    return { data };
   } catch (error) {
     console.error("Error verifying user:", error.message);
     return { data: null, error: error.message };
   }
 }
 
-export async function signOut(userId) {
+export async function checkAuth() {
+  try {
+    const response = await fetch("http://localhost:8080/auth/check");
+    if (response.ok) {
+      const data = await response.json();
+      return { data };
+    } else {
+      const error = await response.text();
+      throw new Error(error);
+    }
+  } catch (error) {
+    console.error("Error verifying user:", error.message);
+    return { data: null, error: error.message };
+  }
+}
+
+export async function signOut() {
   try {
     return { data: "success" };
   } catch (error) {

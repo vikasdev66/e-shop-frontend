@@ -115,9 +115,11 @@ export default function ProductList() {
   }, [totalItems, sort]);
 
   useEffect(() => {
-    dispatch(fetchAllProductsBrandsAsync());
-    dispatch(fetchAllProductsCategoriesAsync());
-  }, []);
+    if (products.length) {
+      dispatch(fetchAllProductsBrandsAsync());
+      dispatch(fetchAllProductsCategoriesAsync());
+    }
+  }, [products]);
 
   return (
     <div className="bg-white">

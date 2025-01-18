@@ -20,20 +20,20 @@ export async function createOrder(order) {
   }
 }
 
-export async function fetchOrders(userId) {
+export async function fetchOrders() {
   try {
     const response = await fetch(
-      `${process.env.REACT_APP_BASE_URL}/orders/own/?userId=${userId}`
+      `${process.env.REACT_APP_BASE_URL}/orders/own`
     );
     if (!response.ok) {
       throw new Error(
-        `Failed to place order: ${response.status} ${response.statusText}`
+        `Failed to fetch order: ${response.status} ${response.statusText}`
       );
     }
     const data = await response.json();
     return { data };
   } catch (error) {
-    console.error("Error to place order:", error.message);
+    console.error("Error to fetch order:", error.message);
     return { data: null, error: error.message };
   }
 }

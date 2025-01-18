@@ -10,7 +10,6 @@ const initialState = {
   orders: [],
   status: "idle",
   currentOrder: null,
-  isRedirect: false,
   totalOrders: 0,
 };
 
@@ -25,8 +24,8 @@ export const createOrderAsync = createAsyncThunk(
 
 export const fetchOrdersAsync = createAsyncThunk(
   "order/fetchOrders",
-  async (userId) => {
-    const response = await fetchOrders(userId);
+  async () => {
+    const response = await fetchOrders();
     // The value we return becomes the `fulfilled` action payload
     return response.data;
   }
@@ -53,8 +52,8 @@ export const orderSlice = createSlice({
   name: "order",
   initialState,
   reducers: {
-    resetOrderIsRedirect: (state) => {
-      state.isRedirect = false;
+    resetCurrentOrder: (state) => {
+      state.currentOrder = null;
     },
   },
   extraReducers: (builder) => {
@@ -95,7 +94,7 @@ export const orderSlice = createSlice({
   },
 });
 
-export const { resetOrderIsRedirect } = orderSlice.actions;
+export const { resetCurrentOrder } = orderSlice.actions;
 
 export const selectOrdersDetails = (state) => state.order;
 export const selectOrders = (state) => state.order.orders;

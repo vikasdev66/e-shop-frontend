@@ -50,7 +50,7 @@ export default function UserProfile() {
     setShowAddAddressForm(true);
   };
   const handleAdd = (address) => {
-    dispatch(createAddressAsync({ ...address, user: user.userInfo.id }));
+    dispatch(createAddressAsync(address));
     reset();
     setSelectedEditIndex(-1);
     setShowAddAddressForm(false);

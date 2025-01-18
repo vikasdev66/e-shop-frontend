@@ -1,24 +1,16 @@
 import React, { useEffect } from "react";
 import { Link, Navigate, useParams, useLocation } from "react-router-dom";
-import {
-  selectCart,
-  deleteItemFromCartAsync,
-  resetCartItems,
-} from "../features/cart/cartSlice";
-import { resetOrderIsRedirect } from "../features/order/orderSlice";
-import { useSelector, useDispatch } from "react-redux";
+import { resetCartAsync } from "../features/cart/cartSlice";
+import { resetCurrentOrder } from "../features/order/orderSlice";
+import { useDispatch } from "react-redux";
 
 export default function OrderSuccessPage() {
   const { id } = useParams();
-  const cartItems = useSelector(selectCart);
   const dispatch = useDispatch();
   const location = useLocation();
   useEffect(() => {
-    cartItems.forEach((item) => {
-      if (item && item.id) dispatch(deleteItemFromCartAsync(item.id));
-    });
-    dispatch(resetCartItems());
-    dispatch(resetOrderIsRedirect());
+    dispatch(resetCartAsync());
+    dispatch(resetCurrentOrder());
   }, [location.pathname === `/order-placed/${id}`]);
   return (
     <>

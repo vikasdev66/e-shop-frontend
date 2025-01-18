@@ -16,8 +16,8 @@ const initialState = {
 
 export const fetchLoggedInUserAsync = createAsyncThunk(
   "user/createUser",
-  async (userId) => {
-    const response = await fetchLoggedInUser(userId);
+  async () => {
+    const response = await fetchLoggedInUser();
     // The value we return becomes the `fulfilled` action payload
     return response.data;
   }
@@ -43,8 +43,8 @@ export const createAddressAsync = createAsyncThunk(
 
 export const fetchAddressByUserIdAsync = createAsyncThunk(
   "user/fetchAddressByUserId",
-  async (userId) => {
-    const response = await fetchAddressByUserId(userId);
+  async () => {
+    const response = await fetchAddressByUserId();
     // The value we return becomes the `fulfilled` action payload
     return response.data;
   }
@@ -134,5 +134,7 @@ export const userSlice = createSlice({
 export const { increment } = userSlice.actions;
 
 export const selectUserInfo = (state) => state.user;
+
+export const selectUserInfoStatus = (state) => state.user.status;
 
 export default userSlice.reducer;

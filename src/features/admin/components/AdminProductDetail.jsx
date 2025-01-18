@@ -47,7 +47,6 @@ export default function AdminProductDetail() {
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const [selectedSize, setSelectedSize] = useState(sizes[2]);
   const product = useSelector(selectProductById);
-  const user = useSelector(selectUserInfo);
   const params = useParams();
 
   const handleAddToCart = (e) => {
@@ -66,7 +65,6 @@ export default function AdminProductDetail() {
         addToCartAsync({
           product: product?.id,
           quantity: 1,
-          user: user?.userInfo?.id,
         })
       );
     }

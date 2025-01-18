@@ -9,7 +9,6 @@ import {
   clearSelectedProduct,
 } from "../productSlice";
 import { selectCart, updateCartAsync } from "../../cart/cartSlice";
-import { selectUserInfo } from "../../user/userSlice";
 import { addToCartAsync } from "../../cart/cartSlice";
 import { discountedPrice } from "../../../app/constants";
 
@@ -47,7 +46,6 @@ export default function ProductDetail() {
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const [selectedSize, setSelectedSize] = useState(sizes[2]);
   const product = useSelector(selectProductById);
-  const user = useSelector(selectUserInfo);
   const params = useParams();
 
   const handleAddToCart = (e) => {
@@ -66,7 +64,6 @@ export default function ProductDetail() {
         addToCartAsync({
           product: product?.id,
           quantity: 1,
-          user: user?.userInfo?.id,
         })
       );
     }
