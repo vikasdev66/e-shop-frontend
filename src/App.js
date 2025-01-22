@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import Protected from "./features/auth/components/Protected";
 import Home from "./pages/Home";
 import LoginPage from "./pages/LoginPage";
@@ -30,6 +30,7 @@ import AdminProductDetailPage from "./pages/AdminProductDetailPage";
 import ProtectedAdmin from "./features/auth/components/ProtectedAdmin";
 import ProductFormPage from "./pages/ProductFormPage";
 import AdminOrdersPage from "./pages/AdminOrdersPage";
+import StripeCheckoutPage from "./pages/StripeCheckout";
 
 const router = createBrowserRouter([
   {
@@ -75,6 +76,14 @@ const router = createBrowserRouter([
     element: (
       <Protected>
         <CartPage />
+      </Protected>
+    ),
+  },
+  {
+    path: "stripe-checkout",
+    element: (
+      <Protected>
+        <StripeCheckoutPage />
       </Protected>
     ),
   },

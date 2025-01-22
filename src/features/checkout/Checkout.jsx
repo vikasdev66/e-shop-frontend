@@ -14,7 +14,6 @@ import {
 import { createOrderAsync, selectOrdersDetails } from "../order/orderSlice";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import { Link, Navigate } from "react-router-dom";
-import { MenuItem } from "@headlessui/react";
 import { useForm } from "react-hook-form";
 import { discountedPrice, subTotalPrice } from "../../app/constants";
 
@@ -95,8 +94,12 @@ export default function Checkout() {
     return <Navigate to={"/"} replace />;
   }
 
-  if (order?.currentOrder?.id) {
+  if (order?.currentOrder && order?.currentOrder?.paymentMethod === "cash") {
     return <Navigate to={`/order-placed/${order?.currentOrder?.id}`} replace />;
+  }
+
+  if (order?.currentOrder && order?.currentOrder?.paymentMethod === "card") {
+    return <Navigate to={`/stripe-checkout/`} replace />;
   }
   return (
     <>
