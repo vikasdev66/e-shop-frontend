@@ -13,7 +13,6 @@ import {
 } from "../../product-list/productSlice";
 import { useForm } from "react-hook-form";
 import { useParams, useNavigate } from "react-router-dom";
-import { discountedPrice } from "../../../app/constants";
 
 export default function ProductForm() {
   const {

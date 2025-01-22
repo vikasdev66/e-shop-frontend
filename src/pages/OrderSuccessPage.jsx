@@ -11,7 +11,7 @@ export default function OrderSuccessPage() {
   useEffect(() => {
     dispatch(resetCartAsync());
     dispatch(resetCurrentOrder());
-  }, [location.pathname === `/order-placed/${id}`]);
+  }, [dispatch, location.pathname === `/order-placed/${id}`]);
   return (
     <>
       {!id && <Navigate to={"/"} replace />}

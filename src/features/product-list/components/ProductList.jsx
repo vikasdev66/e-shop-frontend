@@ -40,13 +40,6 @@ const sortOptions = [
   { name: "Price: Low to High", sort: "price", order: "asc", current: false },
   { name: "Price: High to Low", sort: "price", order: "desc", current: false },
 ];
-const subCategories = [
-  { name: "Totes", href: "#" },
-  { name: "Backpacks", href: "#" },
-  { name: "Travel Bags", href: "#" },
-  { name: "Hip Bags", href: "#" },
-  { name: "Laptop Sleeves", href: "#" },
-];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -62,7 +55,6 @@ export default function ProductList() {
   const [filter, setFilter] = useState({});
   const [sort, setSort] = useState({});
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState();
 
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
