@@ -8,6 +8,8 @@ import {
   selectCategories,
   selectProductById,
   updateProductAsync,
+  createBrandAsync,
+  createCategoryAsync,
 } from "../../product-list/productSlice";
 import { useForm } from "react-hook-form";
 import { useParams, useNavigate } from "react-router-dom";
@@ -86,6 +88,15 @@ export default function ProductForm() {
           reset();
         } else {
           dispatch(createProductAsync(product));
+          dispatch(
+            createBrandAsync({ label: product.brand, value: product.brand })
+          );
+          dispatch(
+            createCategoryAsync({
+              label: product.category,
+              value: product.category,
+            })
+          );
           reset();
           //TODO:  on product successfully added clear fields and show a message
         }

@@ -7,6 +7,8 @@ import {
   fetchProductById,
   createProduct,
   updateProduct,
+  createBrand,
+  createCategory,
 } from "./productAPI";
 
 const initialState = {
@@ -22,6 +24,24 @@ export const createProductAsync = createAsyncThunk(
   "product/createProduct",
   async (product) => {
     const response = await createProduct(product);
+    // The value we return becomes the `fulfilled` action payload
+    return response.data;
+  }
+);
+
+export const createBrandAsync = createAsyncThunk(
+  "product/createBrand",
+  async (brand) => {
+    const response = await createBrand(brand);
+    // The value we return becomes the `fulfilled` action payload
+    return response.data;
+  }
+);
+
+export const createCategoryAsync = createAsyncThunk(
+  "product/createCategory",
+  async (category) => {
+    const response = await createCategory(category);
     // The value we return becomes the `fulfilled` action payload
     return response.data;
   }
@@ -56,45 +76,18 @@ export const fetchProductByIdAsync = createAsyncThunk(
 
 export const fetchAllProductsBrandsAsync = createAsyncThunk(
   "product/fetchAllProductsBrands",
-  async (_, { getState }) => {
-    const state = getState();
-    const data = [];
-    const brands = state?.product?.products.map((product) => product.brand);
-    [...new Set(brands)].forEach((brand, index) => {
-      if (brand) {
-        data.push({
-          id: index,
-          value: brand,
-          label: brand,
-          checked: false,
-        });
-      }
-    });
-
-    return data;
+  async () => {
+    const response = await fetchAllProductsBrands();
+    // The value we return becomes the `fulfilled` action payload
+    return response.data;
   }
 );
 
 export const fetchAllProductsCategoriesAsync = createAsyncThunk(
   "product/fetchAllProductsCategories",
-  async (_, { getState }) => {
-    const state = getState();
-    const data = [];
-    const categories = state?.product?.products.map(
-      (product) => product.category
-    );
-    [...new Set(categories)].forEach((category, index) => {
-      if (category) {
-        data.push({
-          id: index,
-          value: category,
-          label: category,
-          checked: false,
-        });
-      }
-    });
-
-    return data;
+  async () => {
+    const response = await fetchAllProductsCategories();
+    return response.data;
   }
 );
 
@@ -162,6 +155,20 @@ export const productSlice = createSlice({
       .addCase(createProductAsync.fulfilled, (state, action) => {
         state.status = "idle";
         state.products.push(action.payload);
+      })
+      .addCase(createBrandAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(createBrandAsync.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.brands.push(action.payload);
+      })
+      .addCase(createCategoryAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(createCategoryAsync.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.categories.push(action.payload);
       })
       .addCase(updateProductAsync.pending, (state) => {
         state.status = "loading";

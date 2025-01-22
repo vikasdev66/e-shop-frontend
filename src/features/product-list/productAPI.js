@@ -108,6 +108,53 @@ export async function createProduct(product) {
   }
 }
 
+export async function createBrand(brand) {
+  try {
+    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/brands`, {
+      method: "POST",
+      body: JSON.stringify(brand),
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      throw new Error(
+        `Failed to add Brand: ${response.status} ${response.statusText}`
+      );
+    }
+    const data = await response.json();
+    return { data };
+  } catch (error) {
+    console.error("Error add to Brand:", error.message);
+    return { data: null, error: error.message };
+  }
+}
+
+export async function createCategory(category) {
+  try {
+    const response = await fetch(
+      `${process.env.REACT_APP_BASE_URL}/categories`,
+      {
+        method: "POST",
+        body: JSON.stringify(category),
+        headers: {
+          "content-type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error(
+        `Failed to add Category: ${response.status} ${response.statusText}`
+      );
+    }
+    const data = await response.json();
+    return { data };
+  } catch (error) {
+    console.error("Error add to Category:", error.message);
+    return { data: null, error: error.message };
+  }
+}
+
 export async function updateProduct(update) {
   try {
     const response = await fetch(
